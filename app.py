@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
+import os
+
 
 app = Flask(__name__)
 
@@ -35,19 +37,17 @@ def register_user():
     gender = request.form.get('gender')
     
     try:
-        # Save to SQLite database
-        conn = sqlite3.connect('database.db')
+        # Use a writable path for the SQLite database
+        conn = sqlite3.connect('/tmp/database.db')  # Updated path
         cursor = conn.cursor()
         
         # Create table if it doesn't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                age INTEGER NOT NULL,
-                gender TEXT NOT NULL
-            )
-        ''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            age INTEGER NOT NULL,
+            gender TEXT NOT NULL
+        )''')
         
         # Insert data into the users table
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
