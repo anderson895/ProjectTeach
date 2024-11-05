@@ -32,26 +32,32 @@ def register_user():
     age = request.form.get('age')
     gender = request.form.get('gender')
     
-    # Save to SQLite database
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
+    try:
+        # Save to SQLite database
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        
+        # Create table if it doesn't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                age INTEGER NOT NULL,
+                gender TEXT NOT NULL
+            )
+        ''')
+        
+        # Insert data into the users table
+        cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
+        conn.commit()
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return "An error occurred while saving data.", 500
+    finally:
+        conn.close()
     
-    # Create table if it doesn't exist
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL,
-            gender TEXT NOT NULL
-        )
-    ''')
-    
-    # Insert data into the users table
-    cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
-    conn.commit()
-    conn.close()
-    
-    # Redirect to a success or login page
-    return redirect(url_for('student/login'))
+    # Redirect to student login page
+    return redirect(url_for('student_login'))
+
 if __name__ == '__main__':
     app.run(port=5001)
