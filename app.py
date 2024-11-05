@@ -39,18 +39,23 @@ def student_login():
 def student_register():
     return render_template('student/registration.html')
 
+@app.route('/student/sensory_game/<int:user_id>')
+def sensory_game(user_id):
+    return render_template('student/sensory_game.html', user_id=user_id)
+
 @app.route('/student/home')
 def student_home():
     if 'user_id' not in session:
         flash("Please log in to access this page.")
         return redirect(url_for('student_login'))
     
-    name = request.args.get('name')
+    name = session.get('user_name')  # Fetch the user's name from the session
     return render_template('student/home.html', name=name)
 
 @app.route('/logout', methods=['POST'])
 def student_logout():
     session.pop('user_id', None)
+    session.pop('user_name', None)  # Clear the user name from the session
     flash("You have been logged out.")
     return redirect(url_for('student_login'))
 
@@ -73,15 +78,13 @@ def register_user():
         
         cursor = conn.cursor()
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                age INT NOT NULL,
-                gender VARCHAR(10) NOT NULL,
-                type VARCHAR(10) NOT NULL
-            )
-        ''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            age INT NOT NULL,
+            gender VARCHAR(10) NOT NULL,
+            type VARCHAR(10) NOT NULL
+        )''')
         
         cursor.execute('SELECT * FROM users WHERE name = %s', (name,))
         existing_user = cursor.fetchone()
@@ -119,8 +122,9 @@ def login_user():
         user = cursor.fetchone()
         
         if user:
-            session['user_id'] = user[0]
-            return redirect(url_for('student_home', name=username))
+            session['user_id'] = user[0]  # Store user ID in session
+            session['user_name'] = user[1]  # Store user name in session
+            return redirect(url_for('student_home'))
         else:
             flash(f'User "{username}" not found. Please register.')
             return redirect(url_for('student_login'))
