@@ -14,21 +14,16 @@
             
             {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="mt-4">
+                <ul class="space-y-4">
                     {% for message in messages %}
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                            <span class="block sm:inline">{{ message }}</span>
-                            <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                                <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.remove()">
-                                    <title>Close</title>
-                                    <path d="M10 9.293l4.646-4.647a.5.5 0 10-.708-.707L10 8.586 5.354 4.939a.5.5 0 10-.708.707L9.293 10l-4.647 4.646a.5.5 0 10.708.707L10 11.414l4.646 4.647a.5.5 0 00.708-.707L10 10.586l4.647-4.646a.5.5 0 00-.707-.707L10 9.293z"/>
-                                </svg>
-                            </span>
-                        </div>
+                        <li class="alert alert-success bg-green-100 border border-green-400 text-red-700 rounded-lg p-4 shadow-md">
+                            {{ message }}
+                        </li>
                     {% endfor %}
-                </div>
+                </ul>
             {% endif %}
         {% endwith %}
+        
         
 
             <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
