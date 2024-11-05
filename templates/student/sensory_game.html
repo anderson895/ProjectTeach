@@ -13,7 +13,7 @@
 </script>
 <script src="{{ url_for('static', filename='student/sensory.js') }}"></script>
 
-<div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto">
+<div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto game_Card">
 
     <!-- Back Button -->
     <div class="mb-6">
@@ -52,7 +52,7 @@
     <div id="timer" class="text-lg font-bold">Elapsed Time: 00:00</div>
     
     <!-- Game Container -->
-    <div class="flex flex-col lg:flex-row justify-between game_Card">
+    <div class="flex flex-col lg:flex-row justify-between">
         <!-- Icon Grid -->
         <div id="icon-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 p-4 w-full lg:w-2/3 mb-4 lg:mb-0">
             <!-- Images will be added dynamically here -->
@@ -89,9 +89,11 @@
     </div>
 
     <!-- Completion Message Section -->
-    <div id="completion-message" class="text-3xl font-bold text-green-600 text-center mt-6" style="display: none;">
-        Congratulations! You have completed all levels of the Sensory Game!
-    </div>
+  
 </div>
 
+
+<div id="completion-message" class="text-3xl font-bold text-green-600 text-center mt-6" style="display: none;">
+    Congratulations! You have completed all levels of the Sensory Game!
+</div>
 {% include 'student/footer.html' %}

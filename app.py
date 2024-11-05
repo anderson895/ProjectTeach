@@ -150,10 +150,10 @@ def save_game_results():
     date_today = data['DateToday']
 
     # Determine the current level based on the provided levels
-    if not gr_lvl3:
-        gr_current_level = "gr_lvl3"  # If level 3 is not completed
-    elif not gr_lvl2:
-        gr_current_level = "gr_lvl2"  # If level 2 is not completed
+    if not gr_lvl2:
+        gr_current_level = "gr_lvl2"  # If level 3 is not completed
+    elif not gr_lvl3:
+        gr_current_level = "gr_lvl3"  # If level 2 is not completed
     else:
         gr_current_level = "Completed"  # All levels completed
 
