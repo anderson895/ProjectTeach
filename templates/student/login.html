@@ -10,8 +10,9 @@
 
     <div class="text-center max-w-xs">
         <!-- Header Section -->
-        <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
-        
+        <a href="{{ url_for('landing') }}">
+            <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
+        </a>
         <!-- Dog Image Placeholder (replace src with actual image) -->
         <img src="https://via.placeholder.com/150" alt="Dog Icon" class="mx-auto my-4 w-24 h-24">
         
@@ -36,9 +37,6 @@
         <p class="mt-4 text-gray-800 text-sm">
             You don’t have an account yet? <a href="{{ url_for('student_register') }}" class="text-yellow-400 font-semibold hover:underline">Register</a>
         </p>
-        <button class="mt-2 bg-yellow-200 text-gray-800 font-semibold py-2 px-4 rounded-md hover:bg-yellow-300 transition duration-200">
-            Register
-        </button>
     </div>
 
     <!-- Material Icons for Icons in Inputs (replace with Font Awesome if needed) -->
