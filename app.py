@@ -51,13 +51,14 @@ def register_user():
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
         conn.commit()
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
-        return "An error occurred while saving data.", 500
+        print(f"Database error: {e}")  # Print error to console
+        return "An error occurred while saving data: " + str(e), 500
     finally:
         conn.close()
     
     # Redirect to student login page
     return redirect(url_for('student_login'))
+
 
 if __name__ == '__main__':
     app.run(port=5001)
