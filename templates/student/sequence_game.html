@@ -1,15 +1,93 @@
-{% include 'student/header.html' %}
 
-<script>
-    user_id = $('#user_id').val();  
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Game Selection</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
-</script>
-<script src="{{ url_for('static', filename='student/sequence.js') }}"></script>
+</head>
 
 
-<h1>sequence</h1>
+<body class="bg-green-200 font-sans">
+
+  <input type="hidden" id="user_id" name="user_id" value="{{ session['user_id'] }}">
+
+  <!-- Header Section -->
+  <div class="bg-blue-600 text-center py-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center ml-12"> <!-- Add ml-6 for left margin -->
+        <a href="{{ url_for('student_home') }}">
+          <h1 class="text-4xl font-bold text-white mr-4">WELCOME, {{ session['user_name'] }}!</h1>
+        </a>
+        <div class="w-16 h-16">
+          <!-- Placeholder for character image -->
+          <img src="{{ url_for('static', filename='assets/happy.png') }}" alt="Character" class="w-full h-full object-contain">
+        </div>
+      </div>
+      
+      <!-- Logout Button -->
+      <div class="flex items-center mr-6">
+        <form action="{{ url_for('student_logout') }}" method="post">
+          <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded font-semibold uppercase hover:bg-red-500">
+            Logout
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- End Of Header -->
+
+  <script>
+    user_id = $('#user_id').val();  
+  </script>
+  <script src="{{ url_for('static', filename='student/sequence.js') }}"></script>
+
+  <style>
+    .puzzle-piece {
+      background-image: url('/static/assets/Sequence/Animals.png'); /* replace with your image path */
+      background-size: 700%; /* Display the image at its actual size */
+      cursor: grab;
+    }
+    .piece-1 { background-position: 0% 0; }
+    .piece-2 { background-position: 17% 0; }
+    .piece-3 { background-position: 34% 0; }
+    .piece-4 { background-position: 51% 0; }
+    .piece-5 { background-position: 68% 0; }
+    .piece-6 { background-position: 85% 0; }
+    .piece-7 { background-position: 100% 0; }
+  </style>
+</head>
 
 
-
+<div class="bg-green-200 flex items-center justify-center min-h-screen relative">
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 text-center mt-4">
+      <h1 class="text-3xl font-bold text-blue-600">SEQUENCE <span class="text-yellow-600">PUZZLE</span></h1>
+      
+      <div id="puzzle-container" class="mt-8 grid grid-cols-8 gap-0">
+        <!-- Puzzle pieces -->
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-1" data-order="1" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-2" data-order="2" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-3" data-order="3" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-4" data-order="4" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-5" data-order="5" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-6" data-order="6" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-7" data-order="7" draggable="true"></div>
+      </div>
+      
+      <p class="mt-4 text-lg text-gray-600">Arrange the puzzle pieces in sequence to reveal the image!</p>
+      <p id="success-message" class="hidden text-2xl font-bold text-green-600 mt-4">Congratulations!</p>
+  
+      <!-- Complete Image Display -->
+      <div id="complete-image" class="hidden mt-8">
+        <h2 class="text-xl font-bold text-blue-600">Here's the completed image!</h2>
+        <img src="/static/assets/Sequence/Animals.png" alt="Completed Puzzle" class="w-64 mx-auto mt-4 border border-gray-400">
+      </div>
+    </div>
+  </div>
+  
+  
 {% include 'student/footer.html' %}
