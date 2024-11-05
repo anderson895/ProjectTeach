@@ -49,6 +49,14 @@ def register_user():
             )
         ''')
         
+        # Check if the user already exists
+        cursor.execute('SELECT * FROM users WHERE name = ?', (name,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            flash('Registration failed! User {} already exists.'.format(name))
+            return redirect(url_for('registration_page'))  # Redirect back to registration page
+        
         # Insert data into the users table
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
         conn.commit()
