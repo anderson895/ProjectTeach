@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Teach - Game Selection</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Game Selection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-green-200 flex flex-col items-center min-h-screen">
-    <!-- Header Section -->
-    <header class="w-full bg-blue-600 text-center py-4 relative">
-        <h1 class="text-3xl font-bold text-white">
-            WELCOME, <span class="capitalize">{{ user_name }}</span>
-        </h1>
-        <!-- Mascot Icon -->
-        <img src="{{ url_for('static', filename='assets/tiger.png') }}" alt="Tiger Mascot" class="absolute top-0 right-5 w-16 h-16 -mt-8">
-    </header>
 
-    <!-- Game Selection Grid -->
-    <div class="grid grid-cols-2 gap-6 mt-8 max-w-xl text-center">
-        <!-- Sensory Game -->
-        <div class="bg-white shadow-lg rounded-lg p-4">
-            <img src="{{ url_for('static', filename='assets/sensory_game.png') }}" alt="Sensory Game" class="w-full h-40 object-cover mb-4">
-            <a href="{{ url_for('sensory_game') }}" class="text-blue-500 font-bold hover:underline">
-                SENSORY GAME
-            </a>
-        </div>
+<body class="bg-green-200 font-sans">
 
-        <!-- Sequence Puzzle Game -->
-        <div class="bg-white shadow-lg rounded-lg p-4">
-            <img src="{{ url_for('static', filename='assets/sequence_puzzle_game.png') }}" alt="Sequence Puzzle Game" class="w-full h-40 object-cover mb-4">
-            <a href="{{ url_for('sequence_puzzle_game') }}" class="text-purple-500 font-bold hover:underline">
-                SEQUENCE PUZZLE GAME
-            </a>
-        </div>
-
-        <!-- Matching Game -->
-        <div class="bg-white shadow-lg rounded-lg p-4">
-            <img src="{{ url_for('static', filename='assets/matching_game.png') }}" alt="Matching Game" class="w-full h-40 object-cover mb-4">
-            <a href="{{ url_for('matching_game') }}" class="text-green-500 font-bold hover:underline">
-                MATCHING GAME
-            </a>
-        </div>
-
-        <!-- Interactive Sorting Game -->
-        <div class="bg-white shadow-lg rounded-lg p-4">
-            <img src="{{ url_for('static', filename='assets/interactive_sorting_game.png') }}" alt="Interactive Sorting Game" class="w-full h-40 object-cover mb-4">
-            <a href="{{ url_for('interactive_sorting_game') }}" class="text-pink-500 font-bold hover:underline">
-                INTERACTIVE SORTING GAME
-            </a>
-        </div>
+  <!-- Header Section -->
+  <div class="bg-blue-600 text-center py-6">
+    <h1 class="text-4xl font-bold text-white">WELCOME, {{ name }}!</h1>
+    <div class="w-16 h-16 mx-auto mt-2">
+      <!-- Placeholder for character image -->
+      <img src="{{ url_for('static', filename='assets/happy.png') }}" alt="Character" class="mx-auto">
     </div>
+    <!-- Logout Button -->
+    <div class="mt-4">
+      <form action="{{ url_for('student_logout') }}" method="post">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded font-semibold uppercase hover:bg-red-500">
+          Logout
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Game Cards Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 p-8 max-w-4xl mx-auto">
+    
+    <!-- Sensory Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <img src="path/to/sensory-game.png" alt="Sensory Game" class="w-full h-40 object-contain mx-auto mb-4">
+      <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase">
+        Sensory Game
+      </button>
+    </div>
+    
+    <!-- Sequence Puzzle Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <img src="path/to/sequence-puzzle-game.png" alt="Sequence Puzzle Game" class="w-full h-40 object-contain mx-auto mb-4">
+      <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase">
+        Sequence Puzzle Game
+      </button>
+    </div>
+
+    <!-- Matching Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <img src="path/to/matching-game.png" alt="Matching Game" class="w-full h-40 object-contain mx-auto mb-4">
+      <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase">
+        Matching Game
+      </button>
+    </div>
+
+    <!-- Interactive Sorting Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <img src="path/to/interactive-sorting-game.png" alt="Interactive Sorting Game" class="w-full h-40 object-contain mx-auto mb-4">
+      <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase">
+        Interactive Sorting Game
+      </button>
+    </div>
+
+  </div>
+
 </body>
 </html>

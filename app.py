@@ -30,6 +30,25 @@ def student_login():
 def student_register():
     return render_template('student/registration.html')
 
+@app.route('/student/home')
+def student_home():
+    if 'user_id' not in session:
+        flash("Please log in to access this page.")
+        return redirect(url_for('student_login'))
+    
+    # Get the name from query parameters
+    name = request.args.get('name')
+    
+    return render_template('student/home.html', name=name)  # Pass the name to the template
+
+
+@app.route('/logout', methods=['POST'])
+def student_logout():
+    session.pop('user_id', None)
+    flash("You have been logged out.")
+    return redirect(url_for('student_login'))
+
+
 @app.route('/register', methods=['POST'])
 def register_user():
     name = request.form.get('name')
@@ -73,6 +92,30 @@ def register_user():
         return "An error occurred while saving data: " + str(e), 500
     
     return redirect(url_for('student_login'))
+
+
+
+@app.route('/login', methods=['POST'])
+def login_user():
+    username = request.form.get('username')
+    
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM users WHERE name = ?', (username,))
+            user = cursor.fetchone()
+            
+            if user:
+                # Log the user in by storing their ID in the session
+                session['user_id'] = user['id']
+                return redirect(url_for('student_home', name=username))  # Pass username as a query parameter
+            else:
+                flash(f'User "{username}" not found. Please register.')
+                return redirect(url_for('student_login'))
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return "An error occurred during login: " + str(e), 500
 
 if __name__ == '__main__':
     app.run(port=5001)
