@@ -45,6 +45,10 @@ def student_register():
 def sensory_game(user_id):
     return render_template('student/sensory_game.html', user_id=user_id)
 
+@app.route('/student/sequence_game/<int:user_id>')
+def sequence_game(user_id):
+    return render_template('student/sequence_game.html', user_id=user_id)
+
 @app.route('/student/home')
 def student_home():
     if 'user_id' not in session:
