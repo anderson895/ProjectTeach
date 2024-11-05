@@ -29,7 +29,7 @@ $(document).ready(function() {
             // Format and display the time as MM:SS
             const minutes = Math.floor(elapsedTime / 60);
             const seconds = elapsedTime % 60;
-            $("#timer").text(`Elapsed Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+            $("#timer").text(`Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
         }, 1000);
     }
 

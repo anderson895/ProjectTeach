@@ -19,6 +19,11 @@
     .piece-5 { background-position: 68% 0; }
     .piece-6 { background-position: 85% 0; }
     .piece-7 { background-position: 100% 0; }
+
+    .drag-hover {
+      border: 2px dashed #3498db;
+      opacity: 0.8;
+    }
   </style>
 </head>
 
@@ -42,6 +47,10 @@
     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 text-center mt-4">
       <h1 class="text-3xl font-bold text-blue-600">SEQUENCE <span class="text-yellow-600">PUZZLE</span></h1>
       
+
+    <div id="level-display" class="text-xl font-bold mb-4">Level: 1</div>
+    <div id="timer" class="text-lg font-bold">Time: 00:00</div>
+
       <div id="puzzle-container" class="mt-8 grid grid-cols-8 gap-0">
         <!-- Puzzle pieces -->
         <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-1" data-order="1" draggable="true"></div>
