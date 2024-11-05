@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const completeImage = document.getElementById("complete-image");
 
     // Shuffle puzzle pieces initially
-    // shufflePieces();
+    shufflePieces();
 
     let draggedPiece = null;
 
