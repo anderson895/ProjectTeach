@@ -48,8 +48,13 @@
             <!-- Gender Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="text" name="gender" placeholder="Gender" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
+                <select name="gender" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                </select>
             </div>
+  
 
             <!-- Sign Up Button -->
             <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 rounded-md hover:bg-blue-600 transition duration-200">
