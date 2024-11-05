@@ -1,8 +1,5 @@
-import os
-import logging
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
-
 
 app = Flask(__name__)
 
@@ -36,42 +33,22 @@ def register_user():
     name = request.form.get('name')
     age = request.form.get('age')
     gender = request.form.get('gender')
-
-    # Log the incoming data
-    logging.debug(f"Received registration data: Name={name}, Age={age}, Gender={gender}")
-
-    if not name or not age or not gender:
-        flash('All fields are required!')
-        return redirect(url_for('student_register'))
-
-    if not age.isdigit() or int(age) <= 0:
-        flash('Please enter a valid age!')
-        return redirect(url_for('student_register'))
-
-    # Using a writable path for SQLite database
-    database_path = '/tmp/database.db'  # Make sure this is correct
-    logging.debug(f"Attempting to connect to database at: {database_path}")
-
+    
     try:
-        conn = sqlite3.connect(database_path)
+        # Save to SQLite database
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         
         # Create table if it doesn't exist
-        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL,
-            gender TEXT NOT NULL
-        )''')
-
-        # Check if the name already exists in the database
-        cursor.execute('SELECT * FROM users WHERE name = ?', (name,))
-        existing_user = cursor.fetchone()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                age INTEGER NOT NULL,
+                gender TEXT NOT NULL
+            )
+        ''')
         
-        if existing_user:
-            flash('This name is already taken. Please choose a different name.')
-            return redirect(url_for('student_register'))
-
         # Insert data into the users table
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
         conn.commit()
@@ -80,16 +57,13 @@ def register_user():
         flash('Registration successful! Welcome, {}!'.format(name))
 
     except sqlite3.Error as e:
-        logging.error(f"Database error: {e}")  # Log the error
-        flash("An error occurred while saving data.")
-        return redirect(url_for('student_register'))
+        print(f"Database error: {e}")  # Print error to console
+        return "An error occurred while saving data: " + str(e), 500
     finally:
         conn.close()
-
+    
     # Redirect to student login page
     return redirect(url_for('student_login'))
-
-
 
 
 if __name__ == '__main__':
