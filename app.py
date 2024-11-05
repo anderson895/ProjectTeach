@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 
 app = Flask(__name__)
-
 app.secret_key = 'AWLJDIAWLWAD' 
+
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route('/')
 def landing():
@@ -26,58 +30,48 @@ def student_login():
 def student_register():
     return render_template('student/registration.html')
 
-def get_db_connection():
-    # Using a timeout to avoid 'database is locked' error
-    conn = sqlite3.connect('database.db', timeout=10)
-    conn.execute('PRAGMA journal_mode=WAL;')  # Set WAL mode for better concurrency
-    return conn
-
-# Route to handle form submission
 @app.route('/register', methods=['POST'])
 def register_user():
-    # Get form data
     name = request.form.get('name')
     age = request.form.get('age')
     gender = request.form.get('gender')
+    user_type = 'student'  # Adjust as needed for dynamic user types
 
-    conn = None
+    if not name or not age or not gender:
+        flash("Please fill out all fields.")
+        return redirect(url_for('student_register'))
+
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # Create table if it doesn't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                age INTEGER NOT NULL,
-                gender TEXT NOT NULL
-            )
-        ''')
-        
-        # Check if the user already exists
-        cursor.execute('SELECT * FROM users WHERE name = ?', (name,))
-        existing_user = cursor.fetchone()
-        
-        if existing_user:
-            flash('Registration failed! User {} already exists.'.format(name))
-            return redirect(url_for('student_register'))  # Redirect back to registration page
-        
-        # Insert data into the users table
-        cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
-        conn.commit()
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    age INTEGER NOT NULL,
+                    gender TEXT NOT NULL,
+                    type TEXT NOT NULL
+                )
+            ''')
+            
+            cursor.execute('SELECT * FROM users WHERE name = ?', (name,))
+            existing_user = cursor.fetchone()
+            
+            if existing_user:
+                flash(f'Registration failed! User "{name}" already exists.')
+                return redirect(url_for('student_register'))
+            
+            cursor.execute('INSERT INTO users (name, age, gender, type) VALUES (?, ?, ?, ?)', 
+                           (name, age, gender, user_type))
+            conn.commit()
 
-        # Flash a success message
-        flash('Registration successful! Welcome, {}!'.format(name))
+            flash(f'Registration successful! Welcome, {name}!')
 
     except sqlite3.Error as e:
-        print(f"Database error: {e}")  # Print error to console
+        print(f"Database error: {e}")
         return "An error occurred while saving data: " + str(e), 500
-    finally:
-        if conn:
-            conn.close()  # Ensure the connection is closed properly
     
-    # Redirect to student login page
     return redirect(url_for('student_login'))
 
 if __name__ == '__main__':
