@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 
 app = Flask(__name__)
+
+app.secret_key = 'AWLJDIAWLWAD' 
 
 @app.route('/')
 def landing():
@@ -50,6 +52,10 @@ def register_user():
         # Insert data into the users table
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
         conn.commit()
+
+        # Flash a success message
+        flash('Registration successful! Welcome, {}!'.format(name))
+
     except sqlite3.Error as e:
         print(f"Database error: {e}")  # Print error to console
         return "An error occurred while saving data: " + str(e), 500
