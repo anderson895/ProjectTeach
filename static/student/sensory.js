@@ -9,7 +9,6 @@ $(document).ready(function() {
     const targetCounts = [5, 10, 15]; // Target counts for level 1, 2, and 3
     const totalItems = [25, 50, 75]; // Total items for level 1, 2, and 3
     const levelResults = {}; // To store results for each level
-   
 
     // Function to select a new target item and display it
     function setNewTargetItem() {
@@ -53,7 +52,6 @@ $(document).ready(function() {
             startNewLevel(); // Proceed to the next level
         }
     }
-    
 
     // Function to evaluate performance
     function evaluatePerformance(time) {
@@ -78,9 +76,16 @@ $(document).ready(function() {
             gr_lvl1: levelResults[1]?.grade || null,
             gr_lvl2: levelResults[2]?.grade || null,
             gr_lvl3: levelResults[3]?.grade || null,
-            DateToday: new Date().toISOString().slice(0, 10)  // Format date
+            DateToday: (() => {
+                const date = new Date();
+                const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+                const formattedDate = new Intl.DateTimeFormat('en-PH', options).format(date);
+                // Split formatted date and rearrange to YYYY-MM-DD
+                const [month, day, year] = formattedDate.split('/');
+                return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+            })()
         };
-
+        
         console.log(gameData)
 
         $.ajax({
@@ -167,11 +172,61 @@ $(document).ready(function() {
         });
     }
 
-    // Initialize the game
-    $("#level-display").text(`Level: ${currentLevel}`); // Initial level display
-    setNewTargetItem(); // Initialize the first target item
-    populateGrid(); // Populate the grid for the first level
-    startTimer(); // Start the timer on game load
+   // Fetch the existing record and set the current level
+$.ajax({
+    url: '/check_existing_record',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ user_id: user_id }), // Ensure user_id is defined
+    success: function(response) {
+        console.log(response);
+
+        if (response.status === 'success' && response.records.length > 0) {
+            const currentRecord = response.records[0]; // Access the first record
+            const gr_current_level = currentRecord[3]; // Index 3 for the current level
+            
+            // Determine the current level based on the retrieved data
+            if (gr_current_level === 'gr_lvl2') {
+                currentLevel = 2; // Start at Level 2
+            } else if (gr_current_level === 'gr_lvl3') {
+                currentLevel = 3; // Start at Level 3
+            } else if (gr_current_level === 'Completed') {
+                $(".game_Card").hide(); // Hide the game grid
+                $("#completion-message").show(); // Show the completion message
+            } else {
+                currentLevel = 1; // Reset to Level 1 if no valid level is found
+            }
+
+            // Initialize game with the current level
+            $("#level-display").text(`Level: ${currentLevel}`);
+            setNewTargetItem(); // Initialize the target item
+            populateGrid(); // Populate the grid for the current level
+            startTimer(); // Start the timer
+        } else {
+            // No records found
+            console.log('No existing records found, starting from Level 1.');
+
+            // Start from Level 1
+            currentLevel = 1; // Reset to Level 1
+            $("#level-display").text(`Level: ${currentLevel}`); // Initial level display
+            setNewTargetItem(); // Initialize the first target item
+            populateGrid(); // Populate the grid for the first level
+            startTimer(); // Start the timer on game load
+        }
+    },
+    error: function(xhr, status, error) {
+        console.error('Error fetching record:', error);
+        // Optional: Display a user-friendly message
+
+        // Start from Level 1 if there's an error fetching the record
+        currentLevel = 1; // Reset to Level 1
+        $("#level-display").text(`Level: ${currentLevel}`); // Initial level display
+        setNewTargetItem(); // Initialize the first target item
+        populateGrid(); // Populate the grid for the first level
+        startTimer(); // Start the timer on game load
+    }
+});
+
 
     // Show instructions and hide after a few seconds
     const instructions = $("#instructions");
