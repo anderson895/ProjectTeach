@@ -64,6 +64,14 @@ def register_user():
             gender TEXT NOT NULL
         )''')
 
+        # Check if the name already exists in the database
+        cursor.execute('SELECT * FROM users WHERE name = ?', (name,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            flash('This name is already taken. Please choose a different name.')
+            return redirect(url_for('student_register'))
+
         # Insert data into the users table
         cursor.execute('INSERT INTO users (name, age, gender) VALUES (?, ?, ?)', (name, age, gender))
         conn.commit()
@@ -80,6 +88,7 @@ def register_user():
 
     # Redirect to student login page
     return redirect(url_for('student_login'))
+
 
 
 
