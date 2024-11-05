@@ -1,18 +1,17 @@
 {% include 'student/header.html' %}
 
-
-
 <script>
+    user_id = $('#user_id').val();  
+
     const items = [
-    { id: "pencil", src: "{{ url_for('static', filename='assets/Sensory/pencil.jpg') }}" },
-    { id: "eraser", src: "{{ url_for('static', filename='assets/Sensory/eraser.jpg') }}" },
-    { id: "crayons", src: "{{ url_for('static', filename='assets/Sensory/crayons.jpg') }}" },
-    { id: "bag", src: "{{ url_for('static', filename='assets/Sensory/bag.png') }}" },
-    { id: "notebook", src: "{{ url_for('static', filename='assets/Sensory/notebook.png') }}" }
-];
+        { id: "pencil", src: "{{ url_for('static', filename='assets/Sensory/pencil.jpg') }}" },
+        { id: "eraser", src: "{{ url_for('static', filename='assets/Sensory/eraser.jpg') }}" },
+        { id: "crayons", src: "{{ url_for('static', filename='assets/Sensory/crayons.jpg') }}" },
+        { id: "bag", src: "{{ url_for('static', filename='assets/Sensory/bag.png') }}" },
+        { id: "notebook", src: "{{ url_for('static', filename='assets/Sensory/notebook.png') }}" }
+    ];
 </script>
 <script src="{{ url_for('static', filename='student/sensory.js') }}"></script>
-
 
 <div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto">
 
@@ -27,18 +26,33 @@
     </div>
 
     <!-- Title -->
-    <div class="text-center mb-6">
+    <div class="text-center mb-2">
         <h1 class="text-5xl font-bold text-blue-500 inline">SENSORY</h1>
         <h1 class="text-5xl font-bold text-yellow-200 inline">GAME</h1>
     </div>
 
-    <!-- Target Item -->
-    <div class="text-center mb-6">
-        <p class="text-3xl">Find and count 5 <span id="target-item" class="font-bold"></span>(s)!</p>
+    <!-- Instructions Section -->
+    <div id="instructions" class="mb-4 p-4 border border-gray-300 rounded bg-gray-100">
+        <h2 class="text-lg font-bold">Instructions:</h2>
+        <p>1. Click on the target item displayed above.</p>
+        <p>2. For Level 1, collect 5 items to proceed to Level 2.</p>
+        <p>3. In Level 2, you need to collect 10 items.</p>
+        <p>4. You have a timer running, and your time will be evaluated at the end of each level.</p>
+        <p>5. Good luck!</p>
     </div>
 
+    <div id="loading-indicator" style="display:none;">Saving results...</div>
+
+    <!-- Target Item -->
+    <div class="text-center mb-2">
+        <p class="text-3xl"><span id="target-item" class="font-bold"></span></p>
+    </div>
+
+    <div id="level-display" class="text-xl font-bold mb-4">Level: 1</div>
+    <div id="timer" class="text-lg font-bold">Elapsed Time: 00:00</div>
+    
     <!-- Game Container -->
-    <div class="flex flex-col lg:flex-row justify-between">
+    <div class="flex flex-col lg:flex-row justify-between game_Card">
         <!-- Icon Grid -->
         <div id="icon-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 p-4 w-full lg:w-2/3 mb-4 lg:mb-0">
             <!-- Images will be added dynamically here -->
@@ -73,7 +87,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Completion Message Section -->
+    <div id="completion-message" class="text-3xl font-bold text-green-600 text-center mt-6" style="display: none;">
+        Congratulations! You have completed all levels of the Sensory Game!
+    </div>
 </div>
 
-
-    {% include 'student/footer.html' %}
+{% include 'student/footer.html' %}

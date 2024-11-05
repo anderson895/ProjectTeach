@@ -6,10 +6,13 @@
   <title>Kids Game Selection</title>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 </head>
 
 
 <body class="bg-green-200 font-sans">
+
+  <input type="hidden" id="user_id" name="user_id" value="{{ session['user_id'] }}">
 
   <!-- Header Section -->
   <div class="bg-blue-600 text-center py-6">
