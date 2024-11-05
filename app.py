@@ -49,15 +49,15 @@ def student_home():
         flash("Please log in to access this page.")
         return redirect(url_for('student_login'))
     
-    name = session.get('user_name')  # Fetch the user's name from the session
-    return render_template('student/home.html', name=name)
+    return render_template('student/home.html')
 
 @app.route('/logout', methods=['POST'])
 def student_logout():
-    session.pop('user_id', None)
-    session.pop('user_name', None)  # Clear the user name from the session
-    flash("You have been logged out.")
-    return redirect(url_for('student_login'))
+    session.pop('user_id', None)  # Remove user ID from session
+    session.pop('user_name', None)  # Remove user name from session
+    flash("You have been logged out.")  # Optional flash message
+    return redirect(url_for('student_login'))  # Redirect to login page
+
 
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -135,6 +135,7 @@ def login_user():
     finally:
         if conn:
             conn.close()
+
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
