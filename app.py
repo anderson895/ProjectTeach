@@ -135,16 +135,27 @@ def login_user():
         if conn:
             conn.close()
 
+
+
 @app.route('/save_game_results', methods=['POST'])
 def save_game_results():
     data = request.get_json()
 
+    # Extract game results from the request data
     game_id = data['game_id']
     user_id = data['user_id']
     gr_lvl1 = data['gr_lvl1']
     gr_lvl2 = data['gr_lvl2']
     gr_lvl3 = data['gr_lvl3']
     date_today = data['DateToday']
+
+    # Determine the current level based on the provided levels
+    if not gr_lvl3:
+        gr_current_level = "gr_lvl3"  # If level 3 is not completed
+    elif not gr_lvl2:
+        gr_current_level = "gr_lvl2"  # If level 2 is not completed
+    else:
+        gr_current_level = "Completed"  # All levels completed
 
     # Save the game results to the database
     connection = get_db_connection()
@@ -155,7 +166,7 @@ def save_game_results():
     SELECT * FROM game_record 
     WHERE gr_user_id = %s AND gr_date = %s
     """
-    
+
     try:
         cursor.execute(check_query, (user_id, date_today))
         existing_record = cursor.fetchone()
@@ -164,19 +175,19 @@ def save_game_results():
             # If record exists, update it
             update_query = """
             UPDATE game_record 
-            SET gr_lvl1 = %s, gr_lvl2 = %s, gr_lvl3 = %s 
+            SET gr_current_level = %s, gr_lvl1 = %s, gr_lvl2 = %s, gr_lvl3 = %s 
             WHERE gr_user_id = %s AND gr_date = %s
             """
-            cursor.execute(update_query, (gr_lvl1, gr_lvl2, gr_lvl3, user_id, date_today))
+            cursor.execute(update_query, (gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, user_id, date_today))
             connection.commit()
             return jsonify({'message': 'Game results updated successfully'}), 200
         else:
             # If record does not exist, insert a new one
             insert_query = """
-            INSERT INTO game_record (gr_game_id, gr_user_id, gr_lvl1, gr_lvl2, gr_lvl3, gr_date)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO game_record (gr_game_id, gr_user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, gr_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_query, (game_id, user_id, gr_lvl1, gr_lvl2, gr_lvl3, date_today))
+            cursor.execute(insert_query, (game_id, user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, date_today))
             connection.commit()
             return jsonify({'message': 'Game results saved successfully'}), 200
     except Error as e:
@@ -185,6 +196,8 @@ def save_game_results():
     finally:
         cursor.close()
         connection.close()
+
+
 
 
 if __name__ == '__main__':

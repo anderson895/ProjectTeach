@@ -47,7 +47,7 @@ $(document).ready(function() {
     
         if (currentLevel >= 3) {
             // If the player has completed Level 3
-            $("#game_Card").hide(); // Hide the game grid
+            $(".game_Card").hide(); // Hide the game grid
             $("#completion-message").show(); // Show the completion message
         } else {
             startNewLevel(); // Proceed to the next level
