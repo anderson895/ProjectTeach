@@ -15,5 +15,13 @@ def admin_login():
 def admin_register():
     return render_template('admin/registration.html')
 
+@app.route('/student/login')
+def student_login():
+    return render_template('student/login.html')
+
+@app.route('/student/register')
+def student_register():
+    return render_template('student/registration.html')
+
 if __name__ == '__main__':
     app.run(port=5001)

@@ -24,10 +24,12 @@
             
 
             <!-- Student Card -->
+            <a href="{{ url_for('student_login') }}">
             <div class="bg-yellow-100 rounded-lg p-6 w-64 mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
                 <img src="{{ url_for('static', filename='assets/student-icon.png') }}" alt="Student Icon" class="w-24 h-24 mx-auto mb-4">
                 <p class="text-center text-lg font-medium">I'm a Student</p>
             </div>
+            </a>
         </div>
     </div>
 </body>
