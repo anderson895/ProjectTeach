@@ -177,7 +177,7 @@ $.ajax({
     url: '/check_existing_record',
     method: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({ user_id: user_id }), // Ensure user_id is defined
+    data: JSON.stringify({ user_id: user_id ,game_id:1}), // Ensure user_id is defined
     success: function(response) {
         console.log(response);
 

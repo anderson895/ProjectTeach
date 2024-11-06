@@ -20,6 +20,120 @@ def get_db_connection():
         app.logger.error(f"Error connecting to database: {e}")
         return None
 
+
+
+@app.route('/save_game_results', methods=['POST'])
+def save_game_results():
+    data = request.get_json()
+
+    # Extract game results from the request data
+    game_id = data['game_id']
+    user_id = data['user_id']
+    gr_lvl1 = data['gr_lvl1']
+    gr_lvl2 = data['gr_lvl2']
+    gr_lvl3 = data['gr_lvl3']
+    date_today = data['DateToday']
+
+    # Save the game results to the database
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # Check if a record already exists for the same user, game, and date
+    check_query = """
+    SELECT * FROM game_record 
+    WHERE gr_user_id = %s AND gr_game_id = %s AND gr_date = %s
+    """
+
+    try:
+        cursor.execute(check_query, (user_id, game_id, date_today))
+        existing_record = cursor.fetchone()
+
+        if existing_record:
+            # If record exists, update it
+            # Determine the current level based on the provided levels
+            if gr_lvl3 is None:
+                gr_current_level = "gr_lvl3"  # If level 3 is not completed
+                update_query = """
+                UPDATE game_record 
+                SET gr_current_level = %s, gr_lvl2 = %s 
+                WHERE gr_user_id = %s AND gr_game_id = %s AND gr_date = %s
+                """
+                cursor.execute(update_query, (gr_current_level, gr_lvl2, user_id, game_id, date_today))
+            else:
+                gr_current_level = "Completed"  # All levels completed
+                update_query = """
+                UPDATE game_record 
+                SET gr_current_level = %s, gr_lvl3 = %s 
+                WHERE gr_user_id = %s AND gr_game_id = %s AND gr_date = %s
+                """
+                cursor.execute(update_query, (gr_current_level, gr_lvl3, user_id, game_id, date_today))
+
+            connection.commit()
+            return jsonify({'message': 'Game results updated successfully'}), 200
+        else:
+            # Determine the current level based on the provided levels
+            if gr_lvl2 is None:
+                gr_current_level = "gr_lvl2"  # If level 2 is not completed
+            elif gr_lvl3 is None:
+                gr_current_level = "gr_lvl3"  # If level 3 is not completed
+            else:
+                gr_current_level = "Completed"  # All levels completed
+
+            # If record does not exist, insert a new one
+            insert_query = """
+            INSERT INTO game_record (gr_game_id, gr_user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, gr_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (game_id, user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, date_today))
+            connection.commit()
+            return jsonify({'message': 'Game results saved successfully'}), 200
+    except Error as e:
+        app.logger.error(f"Database error while saving game results: {e}")
+        return jsonify({'message': 'Error saving game results'}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+
+@app.route('/check_existing_record', methods=['POST'])
+def check_existing_record():
+    data = request.get_json()
+    user_id = data['user_id']
+    game_id = data['game_id']  # Add game_id from the request data
+    date_today = datetime.now().strftime('%Y-%m-%d')  # Format today's date as 'YYYY-MM-DD'
+
+    connection = get_db_connection()
+    if connection is None:
+        app.logger.error("Database connection failed.")
+        return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
+
+    cursor = connection.cursor()
+    try:
+        # Check if a record already exists for the same user, game, and today's date
+        check_query = """
+        SELECT * FROM game_record 
+        WHERE gr_user_id = %s AND gr_game_id = %s AND gr_date = %s
+        """
+        cursor.execute(check_query, (user_id, game_id, date_today))
+        existing_records = cursor.fetchall()
+
+        if existing_records:
+            return jsonify({'status': 'success', 'records': existing_records}), 200
+        else:
+            return jsonify({'status': 'no_records', 'message': 'No records found for this user and game today.'}), 404
+
+    except Error as e:
+        app.logger.error(f"Database error while checking existing records: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+
 @app.route('/')
 def landing():
     message = "Hello, this message is dynamic!"
@@ -140,116 +254,6 @@ def login_user():
     finally:
         if conn:
             conn.close()
-
-@app.route('/save_game_results', methods=['POST'])
-def save_game_results():
-    data = request.get_json()
-
-    # Extract game results from the request data
-    game_id = data['game_id']
-    user_id = data['user_id']
-    gr_lvl1 = data['gr_lvl1']
-    gr_lvl2 = data['gr_lvl2']
-    gr_lvl3 = data['gr_lvl3']
-    date_today = data['DateToday']
-
-    # Save the game results to the database
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    # Check if a record already exists for the same user and date
-    check_query = """
-    SELECT * FROM game_record 
-    WHERE gr_user_id = %s AND gr_date = %s
-    """
-
-    try:
-        cursor.execute(check_query, (user_id, date_today))
-        existing_record = cursor.fetchone()
-
-        if existing_record:
-            # If record exists, update it
-            # Determine the current level based on the provided levels
-            if gr_lvl3 is None:
-                gr_current_level = "gr_lvl3"  # If level 3 is not completed
-                update_query = """
-                UPDATE game_record 
-                SET gr_current_level = %s, gr_lvl2 = %s 
-                WHERE gr_user_id = %s AND gr_date = %s
-                """
-                cursor.execute(update_query, (gr_current_level, gr_lvl2, user_id, date_today))
-            else:
-                gr_current_level = "Completed"  # All levels completed
-                update_query = """
-                UPDATE game_record 
-                SET gr_current_level = %s, gr_lvl3 = %s 
-                WHERE gr_user_id = %s AND gr_date = %s
-                """
-                cursor.execute(update_query, (gr_current_level, gr_lvl3, user_id, date_today))
-
-            connection.commit()
-            return jsonify({'message': 'Game results updated successfully'}), 200
-        else:
-            # Determine the current level based on the provided levels
-            if gr_lvl2 is None:
-                gr_current_level = "gr_lvl2"  # If level 2 is not completed
-            elif gr_lvl3 is None:
-                gr_current_level = "gr_lvl3"  # If level 3 is not completed
-            else:
-                gr_current_level = "Completed"  # All levels completed
-
-            # If record does not exist, insert a new one
-            insert_query = """
-            INSERT INTO game_record (gr_game_id, gr_user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, gr_date)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """
-            cursor.execute(insert_query, (game_id, user_id, gr_current_level, gr_lvl1, gr_lvl2, gr_lvl3, date_today))
-            connection.commit()
-            return jsonify({'message': 'Game results saved successfully'}), 200
-    except Error as e:
-        app.logger.error(f"Database error while saving game results: {e}")
-        return jsonify({'message': 'Error saving game results'}), 500
-    finally:
-        cursor.close()
-        connection.close()
-
-
-
-
-
-
-@app.route('/check_existing_record', methods=['POST'])
-def check_existing_record():
-    data = request.get_json()
-    user_id = data['user_id']
-    date_today = datetime.now().strftime('%Y-%m-%d')  # Format today's date as 'YYYY-MM-DD'
-
-    connection = get_db_connection()
-    if connection is None:
-        app.logger.error("Database connection failed.")
-        return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-
-    cursor = connection.cursor()
-    try:
-        # Check if a record already exists for the same user and today's date
-        check_query = """
-        SELECT * FROM game_record 
-        WHERE gr_user_id = %s AND gr_date = %s
-        """
-        cursor.execute(check_query, (user_id, date_today))
-        existing_records = cursor.fetchall()
-
-        if existing_records:
-            return jsonify({'status': 'success', 'records': existing_records}), 200
-        else:
-            return jsonify({'status': 'no_records', 'message': 'No records found for this user today.'}), 404
-
-    except Error as e:
-        app.logger.error(f"Database error while checking existing records: {e}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-    finally:
-        cursor.close()
-        connection.close()
 
 
 
