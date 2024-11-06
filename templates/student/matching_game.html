@@ -1,6 +1,19 @@
 {% include 'student/header.html' %}
 
 
+<style>
+.highlight {
+    border: 2px solid yellow; /* Or any other color */
+}
+.line {
+    position: absolute;
+    height: 2px;
+    background-color: black;
+    z-index: 100;
+}
+
+
+</style>
 <script src="{{ url_for('static', filename='student/matching.js') }}"></script>
 
 <div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto game_Card">
@@ -20,7 +33,10 @@
         <h6 class="text-4xl font-bold mb-6" id="currentLevel" data-level="1">Level 1</h6>
         
         <!-- Game Container -->
-        <div class="bg-white p-6 rounded-lg shadow-lg" id="game-container" aria-live="polite">
+        <div class="bg-white p-6 rounded-lg shadow-lg relative" id="game-container" aria-live="polite">
+            <!-- SVG container to draw connecting lines between matched dots -->
+            <svg id="line-container" class="absolute top-0 left-0 w-full h-full pointer-events-none"></svg>
+            
             <!-- Content will be dynamically loaded here -->
             <p class="text-gray-500" id="loading-message">Loading...</p> <!-- Optional loading message -->
         </div>
@@ -32,3 +48,5 @@
         </div>
     </div>
 </div>
+
+

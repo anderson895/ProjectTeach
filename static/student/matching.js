@@ -1,8 +1,7 @@
-$(document).ready(function() {
-    let user_id = $('#user_id').val();  
+document.addEventListener('DOMContentLoaded', function() {
+    const user_id = document.getElementById('user_id').value;
     let currentLevel = 1;
-    let selectedLabel = null;
-    let selectedImage = null;
+  
     let matches = 0;
 
     const levels = {
@@ -35,76 +34,77 @@ $(document).ready(function() {
         ]
     };
 
-    function loadLevel(level) {
-        $('#game-container').empty();
-        matches = 0;
-
-        levels[level].forEach(item => {
-            $('#game-container').append(`
-                <div class="flex items-center justify-between mb-4">
-                    <!-- Left dot next to label -->
-                    <div class="flex items-center space-x-2 label-item" data-label="${item.label}">
-                        <div class="border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24">${item.label}</div>
-                      <span class="dot w-3 h-3 bg-black rounded-full" data-label="${item.label}"></span>
-                    </div>
-
-                    <!-- Right dot next to image -->
-                    <div class="flex items-center space-x-2 image-item" data-label="${item.label}">
-                        <span class="w-3 h-3 bg-black rounded-full"></span>
-                        <div class="w-24 h-24 bg-gray-300 rounded-md">
-                            <img src="${item.img}" alt="${item.label}" class="w-full h-full object-cover rounded-md">
-                        </div>
-                    </div>
-                </div>
-            `);
-        });
-    }
-
-
-    
-    function checkMatch() {
-        if (selectedLabel && selectedImage) {
-            if (selectedLabel === selectedImage) {
-                alert("Match found!");
-                matches++;
-                
-                // Hide matched items
-                $(`.label-item[data-label='${selectedLabel}']`).fadeOut();
-                $(`.image-item[data-label='${selectedImage}']`).fadeOut();
-                
-                selectedLabel = null;
-                selectedImage = null;
-
-                // Check if level is completed
-                if (matches === levels[currentLevel].length) {
-                    currentLevel++;
-                    if (currentLevel <= 3) {
-                        loadLevel(currentLevel);
-                        $('#currentLevel').text(`Level ${currentLevel}`);
-                    } else {
-                        $('#game-container').empty();
-                        $('#success-container').removeClass('hidden');
-                    }
-                }
-            } else {
-                alert("Try again!");
-                selectedLabel = null;
-                selectedImage = null;
-            }
+    // Shuffle array function
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
         }
     }
 
+    function loadLevel(level) {
+        const gameContainer = document.getElementById('game-container');
+        gameContainer.innerHTML = '';
+        matches = 0;
+
+        const levelItems = levels[level];
+        shuffleArray(levelItems);
+
+        const labels = levelItems.map(item => item.label);
+        const images = levelItems.map(item => item.img);
+
+        shuffleArray(labels);
+        shuffleArray(images);
+
+        levelItems.forEach((_, i) => {
+            const labelItem = document.createElement('div');
+            labelItem.classList.add('flex', 'items-center', 'space-x-2', 'label-item');
+            labelItem.id = `label-${i}`;
+            labelItem.setAttribute('data-label', labels[i]);
+            labelItem.setAttribute('draggable', 'true');
+
+            const labelText = document.createElement('div');
+            labelText.classList.add('border', 'border-red-300', 'rounded-md', 'px-4', 'py-2', 'text-lg', 'font-semibold', 'text-center', 'w-24');
+            labelText.innerText = labels[i];
+            labelItem.appendChild(labelText);
+
+            const dotLabel = document.createElement('button');
+            dotLabel.classList.add('dot_label', 'w-3', 'h-3', 'bg-black', 'rounded-full');
+            dotLabel.setAttribute('data-label', labels[i]);
+            dotLabel.setAttribute('aria-label', `Dot label ${i}`);
+            labelItem.appendChild(dotLabel);
+
+            const imageItem = document.createElement('div');
+            imageItem.classList.add('flex', 'items-center', 'space-x-2', 'image-item');
+            imageItem.id = `image-${i}`;
+            imageItem.setAttribute('data-label', labels[i]);
+
+            const dotImage = document.createElement('button');
+            dotImage.classList.add('dot_image', 'w-3', 'h-3', 'bg-black', 'rounded-full');
+            dotImage.id = `dot-image-${i}`;
+            imageItem.appendChild(dotImage);
+
+            const imageDiv = document.createElement('div');
+            imageDiv.classList.add('w-24', 'h-24', 'bg-gray-300', 'rounded-md');
+            const imgElement = document.createElement('img');
+            imgElement.src = images[i];
+            imgElement.alt = labels[i];
+            imgElement.classList.add('w-full', 'h-full', 'object-cover', 'rounded-md');
+            imageDiv.appendChild(imgElement);
+            imageItem.appendChild(imageDiv);
+
+            const containerDiv = document.createElement('div');
+            containerDiv.classList.add('flex', 'items-center', 'justify-between', 'mb-4');
+            containerDiv.appendChild(labelItem);
+            containerDiv.appendChild(imageItem);
+            gameContainer.appendChild(containerDiv);
+        });
+    }
+
+    
+
+  
+
     // Load the first level
     loadLevel(currentLevel);
-
-    // Event listeners for label and image selection
-    $(document).on('click', '.label-item', function() {
-        selectedLabel = $(this).data('label');
-        checkMatch();
-    });
-
-    $(document).on('click', '.image-item', function() {
-        selectedImage = $(this).data('label');
-        checkMatch();
-    });
 });
