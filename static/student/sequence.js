@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const user_id = $('#user_id').val();  // Get the user_id from an input field or wherever it's stored
-  
   const puzzleContainer = document.getElementById("puzzle-container");
   const pieces = Array.from(puzzleContainer.children);
   const successMessage = document.getElementById("completeAllLevel-message");
@@ -8,8 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const timerDisplay = document.getElementById("timer");
   const levelDisplay = document.getElementById("level-display");
   const performanceMessage = document.getElementById("performance-message");
-  // const nextLevelContainer = document.getElementById("next-level-container");
-  // const nextLevelButton = document.getElementById("next-level-button");
+  const nextLevelContainer = document.getElementById("next-level-container");
+  const nextLevelButton = document.getElementById("next-level-button");
   const levelResults = {}; // To store results for each level
 
   const images = [
@@ -161,32 +160,53 @@ document.addEventListener("DOMContentLoaded", () => {
   
       saveGameResults(currentLevel + 1); // Save game result after each level completion
   
-    
-  
+      // Show success message and "Next Level" button after the last level (level 3)
+      if (currentLevel < images.length - 1) {
+        setTimeout(() => {
+          nextLevelContainer.classList.remove("hidden"); // Show the button only if it's not the last level
+        }, 2000);
+      }
   
       // Check if it's the last level
       if (currentLevel === images.length - 1) {
         successMessage.textContent = "Congratulations! You've completed all levels!";
         successMessage.classList.remove("hidden");
-
+        nextLevelContainer.classList.add("hidden"); // Hide the "Next Level" button after the final level
       }
     } else {
-     
+      nextLevelContainer.classList.add("hidden"); // Hide the "Next Level" button if puzzle is not solved
       successMessage.classList.add("hidden");
       completeImage.classList.add("hidden");
     }
   }
 
+  // Proceed to the next level when the "Next Level" button is clicked
+  nextLevelButton.addEventListener("click", () => {
+    currentLevel++;
+    if (currentLevel < images.length) {
+      pieces.forEach(piece => {
+        piece.style.backgroundImage = `url('${images[currentLevel]}')`;
+      });
   
+      levelDisplay.textContent = `Level: ${currentLevel + 1}`;
+      shufflePieces();
+      seconds = 1; // Reset timer
+      startTimer(); // Start timer again
   
-  // Trigger the AJAX request to save game results after each level
+      successMessage.classList.add("hidden");
+      completeImage.classList.add("hidden");
+      performanceMessage.classList.add("hidden");
+      nextLevelContainer.classList.add("hidden"); // Hide the next level button until the next level is completed
+    }
+  });
+
   function saveGameResults(levelCompleted) {
     const gameData = {
       game_id: 3,
       user_id: user_id,
-      gr_lvl1: levelResults[1]?.performanceText || null,  // Save performance for Level 1
-      gr_lvl2: levelResults[2]?.performanceText || null,  // Save performance for Level 2
-      gr_lvl3: levelResults[3]?.performanceText || null,  // Save performance for Level 3
+      gr_lvl1: levelResults[0]?.performanceText || null,  // Save performance for Level 1
+      gr_lvl2: levelResults[1]?.performanceText || null,  // Save performance for Level 2
+      gr_lvl3: levelResults[2]?.performanceText || null,  // Save performance for Level 3
       DateToday: (() => {
         const date = new Date();
         const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -195,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
       })()
     };
-  
+
     // Send the data via AJAX to Flask
     $.ajax({
       url: '/save_game_results',  // Your Flask route
@@ -210,148 +230,5 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error('Error saving game result for level:', levelCompleted, error);
       }
     });
-
-
-    
-
-    $.ajax({
-  url: '/check_existing_record',
-  method: 'POST',
-  contentType: 'application/json',
-  data: JSON.stringify({ user_id: user_id, game_id: 3 }), 
-  success: function(response) {
-    console.log(response);
-
-    if (response.status === 'success' && response.records.length > 0) {
-      const currentRecord = response.records[0]; // Access the first record
-      const gr_current_level = currentRecord[3]; // Index 3 for the current level
-
-      // Determine the current level based on the retrieved data
-      if (gr_current_level === 'gr_lvl2') {
-        currentLevel = 2; // Start at Level 2
-      } else if (gr_current_level === 'gr_lvl3') {
-        currentLevel = 3; // Start at Level 3
-      } else if (gr_current_level === 'Completed') {
-        $(".game_Card").hide(); // Hide the game grid
-        $("#completion-message").show(); // Show the completion message
-      } else {
-        currentLevel = 1; // Reset to Level 1 if no valid level is found
-      }
-
-      // Initialize the game with the current level
-      $("#level-display").text(`Level: ${currentLevel}`);
-      updatePuzzleForCurrentLevel();  // Update the puzzle based on the current level
-      startTimer(); // Start the timer
-    } else {
-      console.log('No existing records found, starting from Level 1.');
-      
-      // Start from Level 1
-      currentLevel = 1; 
-      $("#level-display").text(`Level: ${currentLevel}`);
-      updatePuzzleForCurrentLevel();  // Update the puzzle to level 1
-      startTimer(); 
-    }
-  },
-  error: function(xhr, status, error) {
-    console.error('Error fetching record:', error);
-
-    // If error, default to Level 1
-    currentLevel = 1;
-    $("#level-display").text(`Level: ${currentLevel}`);
-    updatePuzzleForCurrentLevel();  // Set puzzle for level 1
-    startTimer(); 
   }
-});
-
-// Helper function to update puzzle for the current level
-function updatePuzzleForCurrentLevel() {
-  // Set the background image based on the current level
-  pieces.forEach(piece => {
-    piece.style.backgroundImage = `url('${images[currentLevel - 1]}')`;
-  });
-
-  // Shuffle pieces for the new level
-  shufflePieces();
-
-  // Reset success message and other UI elements
-  successMessage.classList.add("hidden");
-  completeImage.classList.add("hidden");
-  performanceMessage.classList.add("hidden");
-  
-}
-
-
-
-  }
-
-
-
-
-  $.ajax({
-    url: '/check_existing_record',
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({ user_id: user_id, game_id: 3 }), 
-    success: function(response) {
-      console.log(response);
-  
-      if (response.status === 'success' && response.records.length > 0) {
-        const currentRecord = response.records[0]; // Access the first record
-        const gr_current_level = currentRecord[3]; // Index 3 for the current level
-  
-        // Determine the current level based on the retrieved data
-        if (gr_current_level === 'gr_lvl2') {
-          currentLevel = 2; // Start at Level 2
-        } else if (gr_current_level === 'gr_lvl3') {
-          currentLevel = 3; // Start at Level 3
-        } else if (gr_current_level === 'Completed') {
-          $(".game_Card").hide(); // Hide the game grid
-          $("#completion-message").show(); // Show the completion message
-        } else {
-          currentLevel = 1; // Reset to Level 1 if no valid level is found
-        }
-  
-        // Initialize the game with the current level
-        $("#level-display").text(`Level: ${currentLevel}`);
-        updatePuzzleForCurrentLevel();  // Update the puzzle based on the current level
-        startTimer(); // Start the timer
-      } else {
-        console.log('No existing records found, starting from Level 1.');
-        
-        // Start from Level 1
-        currentLevel = 1; 
-        $("#level-display").text(`Level: ${currentLevel}`);
-        updatePuzzleForCurrentLevel();  // Update the puzzle to level 1
-        startTimer(); 
-      }
-    },
-    error: function(xhr, status, error) {
-      console.error('Error fetching record:', error);
-  
-      // If error, default to Level 1
-      currentLevel = 1;
-      $("#level-display").text(`Level: ${currentLevel}`);
-      updatePuzzleForCurrentLevel();  // Set puzzle for level 1
-      startTimer(); 
-    }
-  });
-  
-  // Helper function to update puzzle for the current level
-  function updatePuzzleForCurrentLevel() {
-    // Set the background image based on the current level
-    pieces.forEach(piece => {
-      piece.style.backgroundImage = `url('${images[currentLevel - 1]}')`;
-    });
-  
-    // Shuffle pieces for the new level
-    shufflePieces();
-  
-    // Reset success message and other UI elements
-    successMessage.classList.add("hidden");
-    completeImage.classList.add("hidden");
-    performanceMessage.classList.add("hidden");
- 
-  }
-  
-  
 });
