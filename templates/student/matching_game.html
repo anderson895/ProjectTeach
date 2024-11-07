@@ -1,124 +1,215 @@
 {% include 'student/header.html' %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matching Pair Game</title>
+  <style>
+    .container {
+      display: flex;
+      justify-content: space-between;
+      width: 500px;
+      margin: auto;
+      padding-top: 50px;
+      position: relative;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+    }
+    .pair {
+      padding: 10px;
+      margin: 10px;
+      background-color: lightblue;
+      border: 1px solid #333;
+      cursor: pointer;
+      text-align: center;
+    }
+    #svg-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  
+  <h2 style="text-align:center;">Matching Pair Game</h2>
+  
 
 
-<div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto game_Card">
-    <!-- Back Button -->
-    <div class="mb-6">
-        <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800" aria-label="Go back to student home">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" role="img" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
-            </svg>
-            <span class="text-lg font-semibold">Back</span>
-        </a>
+  <div class="container" id="game-container">
+    <svg id="svg-lines"></svg>
+    <div class="column" id="left-column">
+      <!-- Dynamic pairs for left column will be inserted here -->
     </div>
-
-    <!-- Game Header -->
-    <div class="text-center">
-        <h1 class="text-4xl font-bold text-blue-600 mb-6">MATCHING <span class="text-yellow-500">GAME</span></h1>
-        <h6 class="text-4xl font-bold mb-6" id="currentLevel" data-level="1">Level 1</h6>
-        
-        <!-- Game Container -->
-        <div class="bg-white p-6 rounded-lg shadow-lg relative" id="game-container" aria-live="polite">
-            <!-- SVG container to draw connecting lines between matched dots -->
-            <svg id="line-container" class="absolute top-0 left-0 w-full h-full pointer-events-none"></svg>
-            
-            <!-- Content will be dynamically loaded here -->
-            <p class="text-gray-500" id="loading-message">Loading...</p> <!-- Optional loading message -->
-        </div>
-
-        <!-- Success Container -->
-        <div id="success-container" class="hidden bg-green-200 p-6 rounded-lg shadow-lg mt-6 text-center" aria-live="polite">
-            <h2 class="text-2xl font-bold text-green-700">Congratulations!</h2>
-            <p class="text-lg text-green-600">You've completed all the levels!</p>
-        </div>
+    <div class="column" id="right-column">
+      <!-- Dynamic pairs for right column will be inserted here -->
     </div>
-</div>
-
-
-<script>
-    $(document).ready(function() {
-    let user_id = $('#user_id').val();  
-    let currentLevel = 1;
-    let selectedLabel = null;
-    let selectedImage = null;
-    let matches = 0;
-
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
     const levels = {
-        1: [
-            { label: "Blue", img: "/static/assets/Matching/ColorMatch/blue.png" },
-            { label: "Green", img: "/static/assets/Matching/ColorMatch/green.png" },
-            { label: "Orange", img: "/static/assets/Matching/ColorMatch/orange.png" },
-            { label: "Pink", img: "/static/assets/Matching/ColorMatch/pink.png" },
-            { label: "Purple", img: "/static/assets/Matching/ColorMatch/purple.png" },
-            { label: "Red", img: "/static/assets/Matching/ColorMatch/red.png" },
-            { label: "Yellow", img: "/static/assets/Matching/ColorMatch/yellow.png" }
-        ],
-        2: [
-            { label: "Circle", img: "/static/assets/Matching/ShapesMatch/circle.png" },
-            { label: "Heart", img: "/static/assets/Matching/ShapesMatch/heart.png" },
-            { label: "Octagon", img: "/static/assets/Matching/ShapesMatch/octagon.png" },
-            { label: "Square", img: "/static/assets/Matching/ShapesMatch/square.png" },
-            { label: "Star", img: "/static/assets/Matching/ShapesMatch/star.png" },
-            { label: "Trapezoid", img: "/static/assets/Matching/ShapesMatch/trapezoid.png" },
-            { label: "Triangle", img: "/static/assets/Matching/ShapesMatch/triangle.png" }
-        ],
-        3: [
-            { label: "Bird", img: "/static/assets/Matching/AnimalsMatch/bird.png" },
-            { label: "Butterfly", img: "/static/assets/Matching/AnimalsMatch/butterfly.png" },
-            { label: "Cat", img: "/static/assets/Matching/AnimalsMatch/cat.png" },
-            { label: "Dog", img: "/static/assets/Matching/AnimalsMatch/Dog.png" },
-            { label: "Fish", img: "/static/assets/Matching/AnimalsMatch/fish.png" },
-            { label: "Jellyfish", img: "/static/assets/Matching/AnimalsMatch/Jellyfish.png" },
-            { label: "Starfish", img: "/static/assets/Matching/AnimalsMatch/Starfish.png" }
-        ]
+      1: [
+        { label: "Blue", img: "/static/assets/Matching/ColorMatch/blue.png" },
+        { label: "Green", img: "/static/assets/Matching/ColorMatch/green.png" },
+        { label: "Orange", img: "/static/assets/Matching/ColorMatch/orange.png" },
+        { label: "Pink", img: "/static/assets/Matching/ColorMatch/pink.png" },
+        { label: "Purple", img: "/static/assets/Matching/ColorMatch/purple.png" },
+        { label: "Red", img: "/static/assets/Matching/ColorMatch/red.png" },
+        { label: "Yellow", img: "/static/assets/Matching/ColorMatch/yellow.png" }
+      ],
+      2: [
+        { label: "Circle", img: "/static/assets/Matching/ShapesMatch/circle.png" },
+        { label: "Heart", img: "/static/assets/Matching/ShapesMatch/heart.png" },
+        { label: "Octagon", img: "/static/assets/Matching/ShapesMatch/octagon.png" },
+        { label: "Square", img: "/static/assets/Matching/ShapesMatch/square.png" },
+        { label: "Star", img: "/static/assets/Matching/ShapesMatch/star.png" },
+        { label: "Trapezoid", img: "/static/assets/Matching/ShapesMatch/trapezoid.png" },
+        { label: "Triangle", img: "/static/assets/Matching/ShapesMatch/triangle.png" }
+      ],
+      3: [
+        { label: "Bird", img: "/static/assets/Matching/AnimalsMatch/bird.png" },
+        { label: "Butterfly", img: "/static/assets/Matching/AnimalsMatch/butterfly.png" },
+        { label: "Cat", img: "/static/assets/Matching/AnimalsMatch/cat.png" },
+        { label: "Dog", img: "/static/assets/Matching/AnimalsMatch/Dog.png" },
+        { label: "Fish", img: "/static/assets/Matching/AnimalsMatch/fish.png" },
+        { label: "Jellyfish", img: "/static/assets/Matching/AnimalsMatch/Jellyfish.png" },
+        { label: "Starfish", img: "/static/assets/Matching/AnimalsMatch/Starfish.png" }
+      ]
     };
 
-    // Shuffle array function
+    let selectedElement = null;
+    const connections = new Map();
+
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-        }
+      // Shuffle array using Fisher-Yates (Durstenfeld) algorithm
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
     }
 
-    function loadLevel(level) {
-        $('#game-container').empty();
-        matches = 0;
+    function renderLevel(level) {
+      const leftColumn = $("#left-column");
+      const rightColumn = $("#right-column");
+      
+      // Clear previous level's pairs
+      leftColumn.empty();
+      rightColumn.empty();
 
-        const levelItems = levels[level];
-        shuffleArray(levelItems);
+      // Get level data and shuffle them
+      const levelData = levels[level];
+      const leftPairs = levelData.map((pair, index) => ({ ...pair, id: index + 1 }));
+      const rightPairs = levelData.map((pair, index) => ({ ...pair, id: String.fromCharCode(65 + index) }));
 
-        const labels = levelItems.map(item => item.label);
-        const images = levelItems.map(item => item.img);
+      // Shuffle both arrays independently
+      shuffleArray(leftPairs);
+      shuffleArray(rightPairs);
 
-        shuffleArray(labels);
-        shuffleArray(images);
+      // Create left column pairs
+      leftPairs.forEach(pair => {
+        leftColumn.append(`<div class="pair" data-pair="${pair.id}">${pair.label}</div>`);
+      });
 
-        for (let i = 0; i < levelItems.length; i++) {
-            $('#game-container').append(`
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-2 label-item" id="label-${i}" data-label="${labels[i]}" draggable="true">
-                        <div class="border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24">${labels[i]}</div>
-                       <button class="dot_label w-3 h-3 bg-black rounded-full" data-label="${labels[i]}" id="dot-label-${i}" aria-label="Dot label ${i}"></button>
+      // Create right column pairs with images
+      rightPairs.forEach(pair => {
+        rightColumn.append(`
+          <div class="pair" data-pair="${pair.id}">
+  <img src="${pair.img}" alt="${pair.label}" class="w-12 h-12 object-cover" />
+</div>
 
-                    </div>
-
-                    <div class="flex items-center space-x-2 image-item" id="image-${i}" data-label="${labels[i]}">
-                       <button class="btn btn-dot_image w-3 h-3 bg-black rounded-full" id="dot-image-${i}"></button>
-                        <div class="w-24 h-24 bg-gray-300 rounded-md">
-                            <img src="${images[i]}" alt="${labels[i]}" class="w-full h-full object-cover rounded-md">
-                        </div>
-                    </div>
-                </div>
-            `);
-        }
+        `);
+      });
     }
 
+    $(document).ready(function () {
+      // Default level
+      renderLevel(1);
+
+      // Level change handler
     
 
-    // Load the first level
-    loadLevel(currentLevel);
-});
+      $(".pair").click(function () {
+        // Determine which column the clicked element belongs to
+        const isLeftColumn = $(this).closest("#left-column").length > 0;
 
-</script>
+        if (selectedElement === null) {
+          // First selection
+          selectedElement = $(this);
+          $(this).css("background-color", "lightgreen");
+        } else {
+          // Second selection - Check if from different columns
+          if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0)) {
+            const element1 = selectedElement;
+            const element2 = $(this);
+
+            // Remove existing connections if any
+            removeConnection(element1);
+            removeConnection(element2);
+
+            // Draw the new line and save the connection
+            drawSVGLine(element1, element2);
+            connections.set(element1[0], element2);
+            connections.set(element2[0], element1);
+          }
+
+          // Reset styles
+          selectedElement.css("background-color", "lightblue");
+          $(this).css("background-color", "lightblue");
+          selectedElement = null;
+        }
+      });
+    });
+
+    function drawSVGLine(element1, element2) {
+      const svg = $("#svg-lines")[0];
+      const svgRect = svg.getBoundingClientRect();
+      const pos1 = element1.offset();
+      const pos2 = element2.offset();
+
+      // Ensure positions are relative to the SVG container
+      const x1 = pos1.left - svgRect.left + element1.outerWidth() / 2;
+      const y1 = pos1.top - svgRect.top + element1.outerHeight() / 2;
+      const x2 = pos2.left - svgRect.left + element2.outerWidth() / 2;
+      const y2 = pos2.top - svgRect.top + element2.outerHeight() / 2;
+
+      // Create SVG line
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", x1);
+      line.setAttribute("y1", y1);
+      line.setAttribute("x2", x2);
+      line.setAttribute("y2", y2);
+      line.setAttribute("stroke", "red");
+      line.setAttribute("stroke-width", 2);
+
+      // Append the line to the SVG
+      svg.appendChild(line);
+
+      // Store line reference in both elements for removal later
+      element1.data("line", line);
+      element2.data("line", line);
+    }
+
+    function removeConnection(element) {
+      const connectedElement = connections.get(element[0]);
+      if (connectedElement) {
+        // Remove the line from both elements
+        const line = element.data("line");
+        if (line) {
+          line.remove();
+        }
+        connections.delete(element[0]);
+        connections.delete(connectedElement[0]);
+      }
+    }
+  </script>
+</body>
+</html>
