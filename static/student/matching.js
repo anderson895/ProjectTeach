@@ -1,3 +1,5 @@
+var user_id = $("#user_id").val()
+
 const levels = {
   1: [
     { label: "Blue", img: "/static/assets/Matching/ColorMatch/blue.png" },
@@ -101,112 +103,161 @@ $(document).ready(function () {
   renderLevel(1);
 
 
-
-// Level change handler
-$(".pair").click(function () {
-  // Determine which column the clicked element belongs to
-  const isLeftColumn = $(this).closest("#left-column").length > 0;
-  const isRightColumn = $(this).closest("#right-column").length > 0;
-
-  if (selectedElement === null) {
-    // First selection
-    selectedElement = $(this);
-    $(this).css("background-color", "lightgreen");
-
-  } else {
-    // Second selection - Check if from different columns
-    if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0) && isRightColumn == true) {
-
-      const element1 = selectedElement;
-      const element2 = $(this);
-
-      // Remove existing connections if any
-      removeConnection(element1);
-      removeConnection(element2);
-
-      // Draw the new line and save the connection
-      drawSVGLine(element1, element2);
-      connections.set(element1[0], element2);
-      connections.set(element2[0], element1);
-
-      // Check if label and image match
-      const label1 = element1.text().trim();
-      const label2 = element2.find("img").attr("alt").trim();
-
-      if (label1 === label2) {
-        console.log(`Correct Match: ${label1} with ${label2}`);
-        element1.css("background-color", "lightblue");
-        element2.css("background-color", "lightblue");
-      } else {
-        console.log(`Incorrect Match: ${label1} with ${label2}`);
-      }
-    } else if (isRightColumn !== (selectedElement.closest("#right-column").length > 0) && isLeftColumn == true) {
-
-      const element2 = selectedElement;
-      const element1 = $(this);
-
-      // Remove existing connections if any
-      removeConnection(element1);
-      removeConnection(element2);
-
-      // Draw the new line and save the connection
-      drawSVGLine(element1, element2);
-      connections.set(element1[0], element2);
-      connections.set(element2[0], element1);
-
-      // Check if label and image match
-      const label1 = element1.text().trim();
-      const label2 = element2.find("img").attr("alt").trim();
-
-      if (label1 === label2) {
-        console.log(`Correct Match: ${label1} with ${label2}`);
-        element1.css("background-color", "lightblue");
-        element2.css("background-color", "lightblue");
-      } else {
-        console.log(`Incorrect Match: ${label1} with ${label2}`);
-      }
+  let timer;
+  let seconds = 0;
+  let minutes = 0;
+  let gameStarted = false;
+  let gameCompleted = false;
+  
+  function startTimer() {
+    if (!gameStarted) {
+      gameStarted = true;
+      timer = setInterval(function() {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+        }
+        updateTimerDisplay();
+      }, 1000);
     }
-
-    // Reset styles
-    selectedElement.css("background-color", "");
-    $(this).css("background-color", "");
-    selectedElement = null;
-
-    // Check if all pairs are connected
-    checkIfAllPairsConnected();
   }
-});
+  
+  function stopTimer() {
+    if (!gameCompleted) {
+      gameCompleted = true;
+      clearInterval(timer);
+      evaluatePerformance();
+    }
+  }
+  
+  function updateTimerDisplay() {
+    const timeString = `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    $('#timer').text(`Time: ${timeString}`);
+  }
+  
+  function evaluatePerformance() {
+    let performance = "Good";
+    if (minutes === 0 && seconds <= 60) {
+      performance = "Excellent";
+    } else if (minutes === 1 && seconds <= 60) {
+      performance = "Very Good";
+    }
+  
+    console.log(`Game Completed in ${minutes}:${seconds < 10 ? "0" : ""}${seconds} - Performance: ${performance}`);
 
-// Function to check if all pairs are connected
-function checkIfAllPairsConnected() {
-  const allLeftElements = $("#left-column .pair");
-  const allRightElements = $("#right-column .pair");
+    // user_id, performance
 
-  let allConnected = true;
-
-  // Check if all left column elements have a connection
-  allLeftElements.each(function () {
-    const element = $(this);
-    if (!connections.has(element[0])) {
-      allConnected = false;
+  }
+  
+  // Level change handler
+  $(".pair").click(function () {
+    // Start the timer when the first pair is selected
+    if (!gameStarted) startTimer();
+  
+    // Determine which column the clicked element belongs to
+    const isLeftColumn = $(this).closest("#left-column").length > 0;
+    const isRightColumn = $(this).closest("#right-column").length > 0;
+  
+    if (selectedElement === null) {
+      // First selection
+      selectedElement = $(this);
+      $(this).css("background-color", "lightgreen");
+    } else {
+      // Second selection - Check if from different columns
+      if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0) && isRightColumn == true) {
+  
+        const element1 = selectedElement;
+        const element2 = $(this);
+  
+        // Remove existing connections if any
+        removeConnection(element1);
+        removeConnection(element2);
+  
+        // Draw the new line and save the connection
+        drawSVGLine(element1, element2);
+        connections.set(element1[0], element2);
+        connections.set(element2[0], element1);
+  
+        // Check if label and image match
+        const label1 = element1.text().trim();
+        const label2 = element2.find("img").attr("alt").trim();
+  
+        if (label1 === label2) {
+          console.log(`Correct Match: ${label1} with ${label2}`);
+          element1.css("background-color", "lightblue");
+          element2.css("background-color", "lightblue");
+        } else {
+          console.log(`Incorrect Match: ${label1} with ${label2}`);
+        }
+      } else if (isRightColumn !== (selectedElement.closest("#right-column").length > 0) && isLeftColumn == true) {
+  
+        const element2 = selectedElement;
+        const element1 = $(this);
+  
+        // Remove existing connections if any
+        removeConnection(element1);
+        removeConnection(element2);
+  
+        // Draw the new line and save the connection
+        drawSVGLine(element1, element2);
+        connections.set(element1[0], element2);
+        connections.set(element2[0], element1);
+  
+        // Check if label and image match
+        const label1 = element1.text().trim();
+        const label2 = element2.find("img").attr("alt").trim();
+  
+        if (label1 === label2) {
+          console.log(`Correct Match: ${label1} with ${label2}`);
+          element1.css("background-color", "lightblue");
+          element2.css("background-color", "lightblue");
+        } else {
+          console.log(`Incorrect Match: ${label1} with ${label2}`);
+        }
+      }
+  
+      // Reset styles
+      selectedElement.css("background-color", "");
+      $(this).css("background-color", "");
+      selectedElement = null;
+  
+      // Check if all pairs are connected
+      checkIfAllPairsConnected();
     }
   });
-
-  // Check if all right column elements have a connection
-  allRightElements.each(function () {
-    const element = $(this);
-    if (!connections.has(element[0])) {
-      allConnected = false;
+  
+  // Function to check if all pairs are connected
+  function checkIfAllPairsConnected() {
+    const allLeftElements = $("#left-column .pair");
+    const allRightElements = $("#right-column .pair");
+  
+    let allConnected = true;
+  
+    // Check if all left column elements have a connection
+    allLeftElements.each(function () {
+      const element = $(this);
+      if (!connections.has(element[0])) {
+        allConnected = false;
+      }
+    });
+  
+    // Check if all right column elements have a connection
+    allRightElements.each(function () {
+      const element = $(this);
+      if (!connections.has(element[0])) {
+        allConnected = false;
+      }
+    });
+  
+    if (allConnected) {
+      console.log("All pairs are connected!");
+      stopTimer();  // Stop the timer when all pairs are matched
+    } else {
+      console.log("Not all pairs are connected yet.");
     }
-  });
-
-  if (allConnected) {
-    console.log("All pairs are connected!");
-    // You can perform any action here when all pairs are connected
-  } else {
-    console.log("Not all pairs are connected yet.");
   }
-}
+  
 
 
 
