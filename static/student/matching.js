@@ -39,6 +39,11 @@ function shuffleArray(array) {
   }
 }
 
+
+
+
+
+
 function renderLevel(level) {
   const leftColumn = $("#left-column");
   const rightColumn = $("#right-column");
@@ -89,85 +94,121 @@ rightColumn.append(`
 }
 
 
+
+
 $(document).ready(function () {
   // Default level
   renderLevel(1);
 
-  // Level change handler
-  $(".pair").click(function () {
-    // Determine which column the clicked element belongs to
-    const isLeftColumn = $(this).closest("#left-column").length > 0;
-    const isRightColumn = $(this).closest("#right-column").length > 0;
 
-   
 
-    if (selectedElement === null) {
-      // First selection
-      selectedElement = $(this);
-      $(this).css("background-color", "lightgreen");
+// Level change handler
+$(".pair").click(function () {
+  // Determine which column the clicked element belongs to
+  const isLeftColumn = $(this).closest("#left-column").length > 0;
+  const isRightColumn = $(this).closest("#right-column").length > 0;
 
-  
-    } else {
-      // Second selection - Check if from different columns
-      if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0)&&isRightColumn==true) {
+  if (selectedElement === null) {
+    // First selection
+    selectedElement = $(this);
+    $(this).css("background-color", "lightgreen");
 
-        const element1 = selectedElement;
-        const element2 = $(this);
+  } else {
+    // Second selection - Check if from different columns
+    if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0) && isRightColumn == true) {
 
-        // Remove existing connections if any
-        removeConnection(element1);
-        removeConnection(element2);
+      const element1 = selectedElement;
+      const element2 = $(this);
 
-        // Draw the new line and save the connection
-        drawSVGLine(element1, element2);
-        connections.set(element1[0], element2);
-        connections.set(element2[0], element1);
+      // Remove existing connections if any
+      removeConnection(element1);
+      removeConnection(element2);
 
-        // Check if label and image match
-        const label1 = element1.text().trim();
-        const label2 = element2.find("img").attr("alt").trim();
+      // Draw the new line and save the connection
+      drawSVGLine(element1, element2);
+      connections.set(element1[0], element2);
+      connections.set(element2[0], element1);
 
-        if (label1 === label2) {
-          console.log(`Correct Match: ${label1} with ${label2}`);
-          element1.css("background-color", "lightblue");
-          element2.css("background-color", "lightblue");
-        } else {
-          console.log(`Incorrect Match: ${label1} with ${label2}`);
-        }
-      }else if(isRightColumn !== (selectedElement.closest("#right-column").length > 0)&&isLeftColumn==true){
+      // Check if label and image match
+      const label1 = element1.text().trim();
+      const label2 = element2.find("img").attr("alt").trim();
 
-        
-        const element2 = selectedElement;
-        const element1 = $(this);
-
-        // Remove existing connections if any
-        removeConnection(element1);
-        removeConnection(element2);
-
-        // Draw the new line and save the connection
-        drawSVGLine(element1, element2);
-        connections.set(element1[0], element2);
-        connections.set(element2[0], element1);
-
-        // Check if label and image match
-        const label1 = element1.text().trim();
-        const label2 = element2.find("img").attr("alt").trim();
-
-        if (label1 === label2) {
-          console.log(`Correct Match: ${label1} with ${label2}`);
-          element1.css("background-color", "lightblue");
-          element2.css("background-color", "lightblue");
-        } else {
-          console.log(`Incorrect Match: ${label1} with ${label2}`);
-        }
+      if (label1 === label2) {
+        console.log(`Correct Match: ${label1} with ${label2}`);
+        element1.css("background-color", "lightblue");
+        element2.css("background-color", "lightblue");
+      } else {
+        console.log(`Incorrect Match: ${label1} with ${label2}`);
       }
+    } else if (isRightColumn !== (selectedElement.closest("#right-column").length > 0) && isLeftColumn == true) {
 
-      // Reset styles
-      selectedElement.css("background-color", "");
-      $(this).css("background-color", "");
-      selectedElement = null;
+      const element2 = selectedElement;
+      const element1 = $(this);
+
+      // Remove existing connections if any
+      removeConnection(element1);
+      removeConnection(element2);
+
+      // Draw the new line and save the connection
+      drawSVGLine(element1, element2);
+      connections.set(element1[0], element2);
+      connections.set(element2[0], element1);
+
+      // Check if label and image match
+      const label1 = element1.text().trim();
+      const label2 = element2.find("img").attr("alt").trim();
+
+      if (label1 === label2) {
+        console.log(`Correct Match: ${label1} with ${label2}`);
+        element1.css("background-color", "lightblue");
+        element2.css("background-color", "lightblue");
+      } else {
+        console.log(`Incorrect Match: ${label1} with ${label2}`);
+      }
+    }
+
+    // Reset styles
+    selectedElement.css("background-color", "");
+    $(this).css("background-color", "");
+    selectedElement = null;
+
+    // Check if all pairs are connected
+    checkIfAllPairsConnected();
+  }
+});
+
+// Function to check if all pairs are connected
+function checkIfAllPairsConnected() {
+  const allLeftElements = $("#left-column .pair");
+  const allRightElements = $("#right-column .pair");
+
+  let allConnected = true;
+
+  // Check if all left column elements have a connection
+  allLeftElements.each(function () {
+    const element = $(this);
+    if (!connections.has(element[0])) {
+      allConnected = false;
     }
   });
+
+  // Check if all right column elements have a connection
+  allRightElements.each(function () {
+    const element = $(this);
+    if (!connections.has(element[0])) {
+      allConnected = false;
+    }
+  });
+
+  if (allConnected) {
+    console.log("All pairs are connected!");
+    // You can perform any action here when all pairs are connected
+  } else {
+    console.log("Not all pairs are connected yet.");
+  }
+}
+
+
 
   // Remove hover effect after deselection
   $(".pair").on('mouseover', function () {
@@ -181,6 +222,10 @@ $(document).ready(function () {
   });
 });
 
+
+
+
+//javascript to control screen
 
 $(window).resize(function () {
 updateAllLines();
