@@ -1,133 +1,203 @@
-// $(document).ready(function() {
-//     let user_id = $('#user_id').val();  
-//     let currentLevel = 1;
-//     let selectedLabel = null;
-//     let selectedImage = null;
-//     let matches = 0;
+const levels = {
+  1: [
+    { label: "Blue", img: "/static/assets/Matching/ColorMatch/blue.png" },
+    { label: "Green", img: "/static/assets/Matching/ColorMatch/green.png" },
+    { label: "Orange", img: "/static/assets/Matching/ColorMatch/orange.png" },
+    { label: "Pink", img: "/static/assets/Matching/ColorMatch/pink.png" },
+    { label: "Purple", img: "/static/assets/Matching/ColorMatch/purple.png" },
+    { label: "Red", img: "/static/assets/Matching/ColorMatch/red.png" },
+    { label: "Yellow", img: "/static/assets/Matching/ColorMatch/yellow.png" }
+  ],
+  2: [
+    { label: "Circle", img: "/static/assets/Matching/ShapesMatch/circle.png" },
+    { label: "Heart", img: "/static/assets/Matching/ShapesMatch/heart.png" },
+    { label: "Octagon", img: "/static/assets/Matching/ShapesMatch/octagon.png" },
+    { label: "Square", img: "/static/assets/Matching/ShapesMatch/square.png" },
+    { label: "Star", img: "/static/assets/Matching/ShapesMatch/star.png" },
+    { label: "Trapezoid", img: "/static/assets/Matching/ShapesMatch/trapezoid.png" },
+    { label: "Triangle", img: "/static/assets/Matching/ShapesMatch/triangle.png" }
+  ],
+  3: [
+    { label: "Bird", img: "/static/assets/Matching/AnimalsMatch/bird.png" },
+    { label: "Butterfly", img: "/static/assets/Matching/AnimalsMatch/butterfly.png" },
+    { label: "Cat", img: "/static/assets/Matching/AnimalsMatch/cat.png" },
+    { label: "Dog", img: "/static/assets/Matching/AnimalsMatch/Dog.png" },
+    { label: "Fish", img: "/static/assets/Matching/AnimalsMatch/fish.png" },
+    { label: "Jellyfish", img: "/static/assets/Matching/AnimalsMatch/Jellyfish.png" },
+    { label: "Starfish", img: "/static/assets/Matching/AnimalsMatch/Starfish.png" }
+  ]
+};
 
-//     const levels = {
-//         1: [
-//             { label: "Blue", img: "/static/assets/Matching/ColorMatch/blue.png" },
-//             { label: "Green", img: "/static/assets/Matching/ColorMatch/green.png" },
-//             { label: "Orange", img: "/static/assets/Matching/ColorMatch/orange.png" },
-//             { label: "Pink", img: "/static/assets/Matching/ColorMatch/pink.png" },
-//             { label: "Purple", img: "/static/assets/Matching/ColorMatch/purple.png" },
-//             { label: "Red", img: "/static/assets/Matching/ColorMatch/red.png" },
-//             { label: "Yellow", img: "/static/assets/Matching/ColorMatch/yellow.png" }
-//         ],
-//         2: [
-//             { label: "Circle", img: "/static/assets/Matching/ShapesMatch/circle.png" },
-//             { label: "Heart", img: "/static/assets/Matching/ShapesMatch/heart.png" },
-//             { label: "Octagon", img: "/static/assets/Matching/ShapesMatch/octagon.png" },
-//             { label: "Square", img: "/static/assets/Matching/ShapesMatch/square.png" },
-//             { label: "Star", img: "/static/assets/Matching/ShapesMatch/star.png" },
-//             { label: "Trapezoid", img: "/static/assets/Matching/ShapesMatch/trapezoid.png" },
-//             { label: "Triangle", img: "/static/assets/Matching/ShapesMatch/triangle.png" }
-//         ],
-//         3: [
-//             { label: "Bird", img: "/static/assets/Matching/AnimalsMatch/bird.png" },
-//             { label: "Butterfly", img: "/static/assets/Matching/AnimalsMatch/butterfly.png" },
-//             { label: "Cat", img: "/static/assets/Matching/AnimalsMatch/cat.png" },
-//             { label: "Dog", img: "/static/assets/Matching/AnimalsMatch/Dog.png" },
-//             { label: "Fish", img: "/static/assets/Matching/AnimalsMatch/fish.png" },
-//             { label: "Jellyfish", img: "/static/assets/Matching/AnimalsMatch/Jellyfish.png" },
-//             { label: "Starfish", img: "/static/assets/Matching/AnimalsMatch/Starfish.png" }
-//         ]
-//     };
+let selectedElement = null;
+const connections = new Map();
 
-//     // Shuffle array function
-//     function shuffleArray(array) {
-//         for (let i = array.length - 1; i > 0; i--) {
-//             const j = Math.floor(Math.random() * (i + 1));
-//             [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-//         }
-//     }
+function shuffleArray(array) {
+  // Shuffle array using Fisher-Yates (Durstenfeld) algorithm
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
-//     function loadLevel(level) {
-//         $('#game-container').empty();
-//         matches = 0;
+function renderLevel(level) {
+  const leftColumn = $("#left-column");
+  const rightColumn = $("#right-column");
+  
+  // Clear previous level's pairs
+  leftColumn.empty();
+  rightColumn.empty();
 
-//         const levelItems = levels[level];
-//         shuffleArray(levelItems);
+  // Get level data and shuffle them
+  const levelData = levels[level];
+  const leftPairs = levelData.map((pair, index) => ({ ...pair, id: index + 1 }));
+  const rightPairs = levelData.map((pair, index) => ({ ...pair, id: String.fromCharCode(65 + index) }));
 
-//         const labels = levelItems.map(item => item.label);
-//         const images = levelItems.map(item => item.img);
+  // Shuffle both arrays independently
+  shuffleArray(leftPairs);
+  shuffleArray(rightPairs);
 
-//         shuffleArray(labels);
-//         shuffleArray(images);
+// Create left column pairs
+leftPairs.forEach(pair => {
+leftColumn.append(`
+<div class="flex items-center space-x-2 label-item">
 
-//         for (let i = 0; i < levelItems.length; i++) {
-//             $('#game-container').append(`
-//                 <div class="flex items-center justify-between mb-4">
-//                     <div class="flex items-center space-x-2 label-item" id="label-${i}" data-label="${labels[i]}" draggable="true">
-//                         <div class="border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24">${labels[i]}</div>
-//                        <button class="dot_label w-3 h-3 bg-black rounded-full" data-label="${labels[i]}" id="dot-label-${i}" aria-label="Dot label ${i}"></button>
+    <div class="pair border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24 hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
+      ${pair.label}
+    </div>
 
-//                     </div>
+</div>
+`);
+});
 
-//                     <div class="flex items-center space-x-2 image-item" id="image-${i}" data-label="${labels[i]}">
-//                        <button class="btn btn-dot_image w-3 h-3 bg-black rounded-full" id="dot-image-${i}"></button>
-//                         <div class="w-24 h-24 bg-gray-300 rounded-md">
-//                             <img src="${images[i]}" alt="${labels[i]}" class="w-full h-full object-cover rounded-md">
-//                         </div>
-//                     </div>
-//                 </div>
-//             `);
-//         }
-//     }
+// Create right column pairs with images
+rightPairs.forEach(pair => {
+rightColumn.append(`
+<div class="flex items-center space-x-2 label-item">
 
-//     // Draw line function
-//     function drawLine(fromElement, toElement, color = 'black') {
-//         const fromOffset = $(fromElement).offset();
-//         const toOffset = $(toElement).offset();
-        
-//         const line = $('<div class="line"></div>');
-//         line.css({
-//             position: 'absolute',
-//             top: fromOffset.top + 10,
-//             left: fromOffset.left + 10,
-//             width: Math.abs(toOffset.left - fromOffset.left) + 'px',
-//             height: '2px',
-//             backgroundColor: color,
-//             transform: 'rotate(' + Math.atan2(toOffset.top - fromOffset.top, toOffset.left - fromOffset.left) + 'rad)',
-//             transformOrigin: '0 0',
-//         });
-//         $('body').append(line);
-//     }
+<div class="pair p-4 flex items-center justify-center bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
 
-//     // Event listeners for label and image click
-//     $(document).on('click', '.label-item', function() {
-//         selectedLabel = $(this).data('label');
-//         if (selectedLabel && selectedImage) {
-//             if (selectedLabel === selectedImage) {
-//                 drawLine(`#dot-label-${selectedLabel}`, `#dot-image-${selectedImage}`, 'green');
-//                 alert('Match found!');
-//                 matches++;
-//             } else {
-//                 drawLine(`#dot-label-${selectedLabel}`, `#dot-image-${selectedImage}`, 'red');
-//                 alert('Try again!');
-//             }
-//             selectedLabel = null;
-//             selectedImage = null;
-//         }
-//     });
+     <div class="w-24 h-24 bg-gray-300 rounded-md">
+            <img src="${pair.img}" alt="${pair.label}" >
+      </div>
+ 
+</div>
 
-//     $(document).on('click', '.image-item', function() {
-//         selectedImage = $(this).data('label');
-//         if (selectedLabel && selectedImage) {
-//             if (selectedLabel === selectedImage) {
-//                 drawLine(`#dot-label-${selectedLabel}`, `#dot-image-${selectedImage}`, 'green');
-//                 alert('Match found!');
-//                 matches++;
-//             } else {
-//                 drawLine(`#dot-label-${selectedLabel}`, `#dot-image-${selectedImage}`, 'red');
-//                 alert('Try again!');
-//             }
-//             selectedLabel = null;
-//             selectedImage = null;
-//         }
-//     });
+</div>
+`);
+});
 
-//     // Load the first level
-//     loadLevel(currentLevel);
-// });
+}
+
+$(document).ready(function () {
+  // Default level
+  renderLevel(1);
+
+  // Level change handler
+  $(".pair").click(function () {
+    // Determine which column the clicked element belongs to
+    const isLeftColumn = $(this).closest("#left-column").length > 0;
+
+    if (selectedElement === null) {
+      // First selection
+      selectedElement = $(this);
+      $(this).css("background-color", "lightgreen");
+    } else {
+      // Second selection - Check if from different columns
+      if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0)) {
+        const element1 = selectedElement;
+        const element2 = $(this);
+
+        // Remove existing connections if any
+        removeConnection(element1);
+        removeConnection(element2);
+
+        // Draw the new line and save the connection
+        drawSVGLine(element1, element2);
+        connections.set(element1[0], element2);
+        connections.set(element2[0], element1);
+
+        // Check if label and image match
+        const label1 = element1.text().trim();
+        const label2 = element2.find("img").attr("alt").trim();
+
+        if (label1 === label2) {
+          console.log(`Correct Match: ${label1} with ${label2}`);
+          element1.css("background-color", "lightblue");
+          element2.css("background-color", "lightblue");
+        } else {
+          console.log(`Incorrect Match: ${label1} with ${label2}`);
+        }
+      }
+
+      // Reset styles
+      selectedElement.css("background-color", "");
+      $(this).css("background-color", "");
+      selectedElement = null;
+    }
+  });
+
+  // Remove hover effect after deselection
+  $(".pair").on('mouseover', function () {
+    if (!selectedElement) {
+      $(this).css("background-color", "lightgray");
+    }
+  }).on('mouseout', function () {
+    if (!selectedElement) {
+      $(this).css("background-color", "");
+    }
+  });
+});
+
+
+$(window).resize(function () {
+updateAllLines();
+});
+
+function updateAllLines() {
+// Clear existing lines
+$("#svg-lines").empty();
+
+// Redraw all connections
+connections.forEach((element2, element1) => {
+drawSVGLine($(element1), $(element2));
+});
+}
+
+function drawSVGLine(element1, element2) {
+const svg = $("#svg-lines")[0];
+const svgRect = svg.getBoundingClientRect();
+const pos1 = element1[0].getBoundingClientRect();
+const pos2 = element2[0].getBoundingClientRect();
+
+const x1 = pos1.left - svgRect.left + pos1.width / 2;
+const y1 = pos1.top - svgRect.top + pos1.height / 2;
+const x2 = pos2.left - svgRect.left + pos2.width / 2;
+const y2 = pos2.top - svgRect.top + pos2.height / 2;
+
+const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+line.setAttribute("x1", x1);
+line.setAttribute("y1", y1);
+line.setAttribute("x2", x2);
+line.setAttribute("y2", y2);
+line.setAttribute("stroke", "red");
+line.setAttribute("stroke-width", 2);
+
+svg.appendChild(line);
+
+element1.data("line", line);
+element2.data("line", line);
+}
+
+
+function removeConnection(element) {
+  const connectedElement = connections.get(element[0]);
+  if (connectedElement) {
+    // Remove the line from both elements
+    const line = element.data("line");
+    if (line) {
+      line.remove();
+    }
+    connections.delete(element[0]);
+    connections.delete(connectedElement[0]);
+  }
+}
