@@ -169,34 +169,45 @@
       });
     });
 
-    function drawSVGLine(element1, element2) {
-      const svg = $("#svg-lines")[0];
-      const svgRect = svg.getBoundingClientRect();
-      const pos1 = element1.offset();
-      const pos2 = element2.offset();
+    $(window).resize(function () {
+  updateAllLines();
+});
 
-      // Ensure positions are relative to the SVG container
-      const x1 = pos1.left - svgRect.left + element1.outerWidth() / 2;
-      const y1 = pos1.top - svgRect.top + element1.outerHeight() / 2;
-      const x2 = pos2.left - svgRect.left + element2.outerWidth() / 2;
-      const y2 = pos2.top - svgRect.top + element2.outerHeight() / 2;
+function updateAllLines() {
+  // Clear existing lines
+  $("#svg-lines").empty();
 
-      // Create SVG line
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      line.setAttribute("x1", x1);
-      line.setAttribute("y1", y1);
-      line.setAttribute("x2", x2);
-      line.setAttribute("y2", y2);
-      line.setAttribute("stroke", "red");
-      line.setAttribute("stroke-width", 2);
+  // Redraw all connections
+  connections.forEach((element2, element1) => {
+    drawSVGLine($(element1), $(element2));
+  });
+}
 
-      // Append the line to the SVG
-      svg.appendChild(line);
+function drawSVGLine(element1, element2) {
+  const svg = $("#svg-lines")[0];
+  const svgRect = svg.getBoundingClientRect();
+  const pos1 = element1[0].getBoundingClientRect();
+  const pos2 = element2[0].getBoundingClientRect();
 
-      // Store line reference in both elements for removal later
-      element1.data("line", line);
-      element2.data("line", line);
-    }
+  const x1 = pos1.left - svgRect.left + pos1.width / 2;
+  const y1 = pos1.top - svgRect.top + pos1.height / 2;
+  const x2 = pos2.left - svgRect.left + pos2.width / 2;
+  const y2 = pos2.top - svgRect.top + pos2.height / 2;
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("x1", x1);
+  line.setAttribute("y1", y1);
+  line.setAttribute("x2", x2);
+  line.setAttribute("y2", y2);
+  line.setAttribute("stroke", "red");
+  line.setAttribute("stroke-width", 2);
+
+  svg.appendChild(line);
+
+  element1.data("line", line);
+  element2.data("line", line);
+}
+
 
     function removeConnection(element) {
       const connectedElement = connections.get(element[0]);
