@@ -88,6 +88,7 @@ rightColumn.append(`
 
 }
 
+
 $(document).ready(function () {
   // Default level
   renderLevel(1);
@@ -96,16 +97,48 @@ $(document).ready(function () {
   $(".pair").click(function () {
     // Determine which column the clicked element belongs to
     const isLeftColumn = $(this).closest("#left-column").length > 0;
+    const isRightColumn = $(this).closest("#right-column").length > 0;
+
+   
 
     if (selectedElement === null) {
       // First selection
       selectedElement = $(this);
       $(this).css("background-color", "lightgreen");
+
+  
     } else {
       // Second selection - Check if from different columns
-      if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0)) {
+      if (isLeftColumn !== (selectedElement.closest("#left-column").length > 0)&&isRightColumn==true) {
+
         const element1 = selectedElement;
         const element2 = $(this);
+
+        // Remove existing connections if any
+        removeConnection(element1);
+        removeConnection(element2);
+
+        // Draw the new line and save the connection
+        drawSVGLine(element1, element2);
+        connections.set(element1[0], element2);
+        connections.set(element2[0], element1);
+
+        // Check if label and image match
+        const label1 = element1.text().trim();
+        const label2 = element2.find("img").attr("alt").trim();
+
+        if (label1 === label2) {
+          console.log(`Correct Match: ${label1} with ${label2}`);
+          element1.css("background-color", "lightblue");
+          element2.css("background-color", "lightblue");
+        } else {
+          console.log(`Incorrect Match: ${label1} with ${label2}`);
+        }
+      }else if(isRightColumn !== (selectedElement.closest("#right-column").length > 0)&&isLeftColumn==true){
+
+        
+        const element2 = selectedElement;
+        const element1 = $(this);
 
         // Remove existing connections if any
         removeConnection(element1);
