@@ -41,57 +41,52 @@ function shuffleArray(array) {
   }
 }
 
-
-
-
-
-
 function renderLevel(level) {
-  const leftColumn = $("#left-column");
-  const rightColumn = $("#right-column");
-  
-  // Clear previous level's pairs
-  leftColumn.empty();
-  rightColumn.empty();
+      const leftColumn = $("#left-column");
+      const rightColumn = $("#right-column");
+      
+      // Clear previous level's pairs
+      leftColumn.empty();
+      rightColumn.empty();
 
-  // Get level data and shuffle them
-  const levelData = levels[level];
-  const leftPairs = levelData.map((pair, index) => ({ ...pair, id: index + 1 }));
-  const rightPairs = levelData.map((pair, index) => ({ ...pair, id: String.fromCharCode(65 + index) }));
+      // Get level data and shuffle them
+      const levelData = levels[level];
+      const leftPairs = levelData.map((pair, index) => ({ ...pair, id: index + 1 }));
+      const rightPairs = levelData.map((pair, index) => ({ ...pair, id: String.fromCharCode(65 + index) }));
 
-  // Shuffle both arrays independently
-  shuffleArray(leftPairs);
-  shuffleArray(rightPairs);
+      // Shuffle both arrays independently
+      shuffleArray(leftPairs);
+      shuffleArray(rightPairs);
 
-// Create left column pairs
-leftPairs.forEach(pair => {
-leftColumn.append(`
-<div class="flex items-center space-x-2 label-item">
+    // Create left column pairs
+    leftPairs.forEach(pair => {
+    leftColumn.append(`
+    <div class="flex items-center space-x-2 label-item">
 
-    <div class="pair border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24 hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
-      ${pair.label}
+        <div class="pair border border-red-300 rounded-md px-4 py-2 text-lg font-semibold text-center w-24 hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
+          ${pair.label}
+        </div>
+
+    </div>
+    `);
+    });
+
+    // Create right column pairs with images
+    rightPairs.forEach(pair => {
+    rightColumn.append(`
+    <div class="flex items-center space-x-2 label-item">
+
+    <div class="pair p-4 flex items-center justify-center bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
+
+        <div class="w-24 h-24 bg-gray-300 rounded-md">
+                <img src="${pair.img}" alt="${pair.label}" >
+          </div>
+    
     </div>
 
-</div>
-`);
-});
-
-// Create right column pairs with images
-rightPairs.forEach(pair => {
-rightColumn.append(`
-<div class="flex items-center space-x-2 label-item">
-
-<div class="pair p-4 flex items-center justify-center bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer" data-pair="${pair.id}">
-
-     <div class="w-24 h-24 bg-gray-300 rounded-md">
-            <img src="${pair.img}" alt="${pair.label}" >
-      </div>
- 
-</div>
-
-</div>
-`);
-});
+    </div>
+    `);
+    });
 
 }
 
@@ -100,7 +95,7 @@ rightColumn.append(`
 
 $(document).ready(function () {
   // Default level
-  renderLevel(1);
+  renderLevel(3);
 
 
   let timer;
@@ -137,18 +132,16 @@ $(document).ready(function () {
   }
   
   function evaluatePerformance() {
-    let performance = "Good";
+    let performance = "Good"; 
     if (minutes === 0 && seconds <= 60) {
       performance = "Excellent";
     } else if (minutes === 1 && seconds <= 60) {
       performance = "Very Good";
     }
-  
     console.log(`Game Completed in ${minutes}:${seconds < 10 ? "0" : ""}${seconds} - Performance: ${performance}`);
-
-    // user_id, performance
-
+    return performance;
   }
+  
   
   // Level change handler
   $(".pair").click(function () {
@@ -223,22 +216,31 @@ $(document).ready(function () {
       selectedElement = null;
   
       // Check if all pairs are connected
-      checkIfAllPairsConnected();
+      checkIfAllPairsConnected(1);
     }
   });
   
-  // Function to check if all pairs are connected
-  function checkIfAllPairsConnected() {
+  function checkIfAllPairsConnected(level) {
     const allLeftElements = $("#left-column .pair");
     const allRightElements = $("#right-column .pair");
   
     let allConnected = true;
+    let allCorrectMatches = true;
   
     // Check if all left column elements have a connection
     allLeftElements.each(function () {
       const element = $(this);
       if (!connections.has(element[0])) {
         allConnected = false;
+      } else {
+        // Check if this pair is a correct match
+        const connectedElement = connections.get(element[0]);
+        const label1 = element.text().trim();
+        const label2 = $(connectedElement).find("img").attr("alt").trim();
+        
+        if (label1 !== label2) {
+          allCorrectMatches = false;
+        }
       }
     });
   
@@ -247,16 +249,37 @@ $(document).ready(function () {
       const element = $(this);
       if (!connections.has(element[0])) {
         allConnected = false;
+      } else {
+        // Check if this pair is a correct match
+        const connectedElement = connections.get(element[0]);
+        const label1 = $(connectedElement).text().trim();
+        const label2 = element.find("img").attr("alt").trim();
+        
+        if (label1 !== label2) {
+          allCorrectMatches = false;
+        }
       }
     });
   
-    if (allConnected) {
-      console.log("All pairs are connected!");
-      stopTimer();  // Stop the timer when all pairs are matched
+    if (allConnected && allCorrectMatches) {
+      console.log("All pairs are connected and correctly matched!");
+      stopTimer();  // Stop the timer when all pairs are matched and correct
+  
+      // Show alert and proceed to the next level after clicking OK
+      let performance = evaluatePerformance();
+      alert(`Complete Level ${level} ${performance}`);
+  
+
+      saveGameResults(performance);
+
+      
     } else {
-      console.log("Not all pairs are connected yet.");
+      console.log("Not all pairs are connected and correctly matched yet.");
     }
   }
+  
+  
+  
   
 
 
@@ -272,6 +295,42 @@ $(document).ready(function () {
     }
   });
 });
+
+
+
+function saveGameResults(performance) {
+  const gameData = {
+      game_id: 2,
+      user_id: user_id,
+      gr_lvl1: null,  
+      gr_lvl2: null,    
+      gr_lvl3: performance,
+      DateToday: (() => {
+          const date = new Date();
+          const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+          const formattedDate = new Intl.DateTimeFormat('en-PH', options).format(date);
+          // Split formatted date and rearrange to YYYY-MM-DD
+          const [month, day, year] = formattedDate.split('/');
+          return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+      })()
+  };
+
+  console.log(gameData);
+
+  $.ajax({
+      url: '/save_game_results',  // Your Flask endpoint
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(gameData),
+      success: function(response) {
+          console.log("Game results saved successfully:", response);
+          window.location.href = '/student/matching_game/'+user_id
+      },
+      error: function(xhr, status, error) {
+          console.error("Error saving game results:", status, error);
+      }
+  });
+}
 
 
 
@@ -330,3 +389,6 @@ function removeConnection(element) {
     connections.delete(connectedElement[0]);
   }
 }
+
+
+

@@ -101,7 +101,7 @@ def save_game_results():
 def check_existing_record():
     data = request.get_json()
     user_id = data['user_id']
-    game_id = data['game_id']  # Add game_id from the request data
+    game_id = data['game_id'] 
     date_today = datetime.now().strftime('%Y-%m-%d')  # Format today's date as 'YYYY-MM-DD'
 
     connection = get_db_connection()
@@ -122,7 +122,7 @@ def check_existing_record():
         if existing_records:
             return jsonify({'status': 'success', 'records': existing_records}), 200
         else:
-            return jsonify({'status': 'no_records', 'message': 'No records found for this user and game today.'}), 404
+            return jsonify({'status': 'no_records', 'message': 'No records found for this user and game today.'}), 200
 
     except Error as e:
         app.logger.error(f"Database error while checking existing records: {e}")
@@ -159,15 +159,60 @@ def student_register():
 def sensory_game(user_id):
     return render_template('student/sensory_game.html', user_id=user_id)
 
-@app.route('/student/sequence_game/<int:user_id>')
-def sequence_game(user_id):
-    return render_template('student/sequence_game.html', user_id=user_id)
 
 
 
 @app.route('/student/matching_game/<int:user_id>')
 def matching_game(user_id):
     return render_template('student/matching_game.html', user_id=user_id)
+
+
+@app.route('/student/matching_game/lvl_1<int:user_id>')
+def matching_gameLvl1(user_id):
+    return render_template('student/matching_game/lvl_1.html', user_id=user_id)
+
+
+@app.route('/student/matching_game/lvl_2<int:user_id>')
+def matching_gameLvl2(user_id):
+    return render_template('student/matching_game/lvl_2.html', user_id=user_id)
+
+
+
+@app.route('/student/matching_game/lvl_3<int:user_id>')
+def matching_gameLvl3(user_id):
+    return render_template('student/matching_game/lvl_3.html', user_id=user_id)
+
+
+
+
+
+
+@app.route('/student/sequence_game/<int:user_id>')
+def sequence_game(user_id):
+    return render_template('student/sequence_game.html', user_id=user_id)
+
+
+
+
+@app.route('/student/sequence_game/lvl_1<int:user_id>')
+def sequence_gameLvl_1(user_id):
+    return render_template('student/sequence_game/lvl_1.html', user_id=user_id)
+
+
+
+@app.route('/student/sequence_game/lvl_2<int:user_id>')
+def sequence_gameLvl_2(user_id):
+    return render_template('student/sequence_game/lvl_2.html', user_id=user_id)
+
+
+
+@app.route('/student/sequence_game/lvl_3<int:user_id>')
+def sequence_gameLvl_3(user_id):
+    return render_template('student/sequence_game/lvl_3.html', user_id=user_id)
+
+
+
+
 
 
 
@@ -206,13 +251,7 @@ def register_user():
         
         cursor = conn.cursor()
 
-        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            age INT NOT NULL,
-            gender VARCHAR(10) NOT NULL,
-            type VARCHAR(10) NOT NULL
-        )''')
+      
         
         cursor.execute('SELECT * FROM users WHERE name = %s', (name,))
         existing_user = cursor.fetchone()

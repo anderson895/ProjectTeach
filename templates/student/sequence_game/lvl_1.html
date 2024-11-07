@@ -1,0 +1,113 @@
+{% include 'student/header.html' %}
+
+<script src="{{ url_for('static', filename='student/sequence_lvl1.js') }}"></script>
+
+<style>
+  .puzzle-piece {
+    background-image: url('/static/assets/Sequence/Animals.png'); /* replace with your image path */
+    background-size: 700%; /* Display the image at its actual size */
+    cursor: grab;
+  }
+  .piece-1 { background-position: 0% 0; }
+  .piece-2 { background-position: 17% 0; }
+  .piece-3 { background-position: 34% 0; }
+  .piece-4 { background-position: 51% 0; }
+  .piece-5 { background-position: 68% 0; }
+  .piece-6 { background-position: 85% 0; }
+  .piece-7 { background-position: 100% 0; }
+
+  .drag-hover {
+    border: 2px dashed #3498db;
+    opacity: 0.8;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+<div class="mt-3 bg-green-200 p-12 rounded-lg shadow-md w-full game_Card">
+
+  <!-- Back Button -->
+<div class="mb-6 flex justify-between items-center">
+  <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
+    </svg>
+    <span class="text-lg font-semibold">Back</span>
+  </a>
+
+  <div id="next-level-container" class="hidden mt-4 ml-4">
+    <button id="next-level-button" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+      <!-- Tailwind Icon for Right Arrow -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6l6 6-6 6" />
+      </svg>
+      <span>Next Level</span>
+    </button>
+    
+  </div>
+</div>
+
+
+
+
+
+  <div class="bg-green-200 flex items-center justify-center min-h-screen relative">
+
+
+
+    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 text-center mt-4">
+      <h1 class="text-3xl font-bold text-blue-600">SEQUENCE <span class="text-yellow-600">PUZZLE</span></h1>
+      <div id="performance-message"></div>
+      <div id="level-display" class="text-xl font-bold mb-4">Level: 1</div>
+      <div id="timer" class="text-lg font-bold">Time: 00:00</div>
+
+      <div id="puzzle-container" class="mt-8 grid grid-cols-8 gap-0">
+        <!-- Puzzle pieces -->
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-1" data-order="1" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-2" data-order="2" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-3" data-order="3" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-4" data-order="4" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-5" data-order="5" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-6" data-order="6" draggable="true"></div>
+        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-7" data-order="7" draggable="true"></div>
+      </div>
+      
+      <p class="mt-4 text-lg text-gray-600">Arrange the puzzle pieces in sequence to reveal the image!</p>
+      <p id="completeAllLevel-message" class="hidden text-2xl font-bold text-green-600 mt-4">Congratulations! You've completed this level!</p>
+      <!-- Complete Image Display -->
+      <div id="complete-image" class="hidden mt-7">
+        <h2 class="text-xl font-bold text-blue-600">Here's the completed image!</h2>
+        <img src="/static/assets/Sequence/Animals.png" alt="Completed Puzzle" class="w-64 mx-auto mt-4 border border-gray-400">
+      </div>
+    </div>
+
+    
+  </div>
+</div>
+
+
+
+<div class="flex items-center justify-center min-h-screen" id="completion-message" style="display: none;">
+  <div class="text-center mt-6">
+      <!-- Trophy Image -->
+      <img 
+          src="{{ url_for('static', filename='assets/Sensory/Trophy.png') }}" 
+          alt="Trophy" 
+          class="w-54 h-64 mx-auto mb-4" 
+      />
+      
+      <!-- Completion Message -->
+      <div 
+         
+          class="text-3xl font-bold text-yellow-600 p-4 bg-green-100 border border-green-400 rounded shadow-lg" 
+         >
+          You have completed the Daily Level in the Sensory Game!
+          <br><span class="text-yellow-600">Go Back Tomorrow</span>
+      </div>
+  </div>
+</div>
+
+
+{% include 'student/footer.html' %}

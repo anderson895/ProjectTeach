@@ -1,7 +1,5 @@
 {% include 'student/header.html' %}
 
-<script src="{{ url_for('static', filename='student/sequence.js') }}"></script>
-
 <style>
   .puzzle-piece {
     background-image: url('/static/assets/Sequence/Animals.png'); /* replace with your image path */
@@ -26,88 +24,79 @@
   }
 </style>
 
-<div class="mt-3 bg-green-200 p-12 rounded-lg shadow-md w-full game_Card">
 
-  <!-- Back Button -->
-<div class="mb-6 flex justify-between items-center">
-  <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
-    </svg>
-    <span class="text-lg font-semibold">Back</span>
-  </a>
+<script>
 
-  <div id="next-level-container" class="hidden mt-4 ml-4">
-    <button id="next-level-button" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-      <!-- Tailwind Icon for Right Arrow -->
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6l6 6-6 6" />
-      </svg>
-      <span>Next Level</span>
-    </button>
-    
-  </div>
-</div>
+var user_id = $("#user_id").val();
+
+$.ajax({
+  url: '/check_existing_record',
+  method: 'POST',
+  contentType: 'application/json',
+  data: JSON.stringify({ user_id: user_id, game_id: 3 }), 
+  success: function(response) {
+      console.log(response);
+
+      let currentLevel; 
+
+      if (response.status === 'success' && Array.isArray(response.records) && response.records.length > 0) {
+          const currentRecord = response.records[0]; 
+          const gr_current_level = currentRecord[3]; 
+          
+       
+          if (gr_current_level === 'gr_lvl2') {
+            window.location.href = '/student/sequence_game/lvl_2' + user_id; 
+          } else if (gr_current_level === 'gr_lvl3') {
+            window.location.href = '/student/sequence_game/lvl_3' + user_id; 
+          } else if (gr_current_level === 'Completed') {
+              $(".game_Card").hide(); 
+              $("#completion-message").show();
+          } else {
+              currentLevel = 1; 
+          }
+
+          console.log('Current Level:', currentLevel); // For debugging
+          
+      } else {
+          // No records found
+          console.log('No existing records found, starting from Level 1.');
+          currentLevel = 1; // Default to Level 1 if no records are found
+          console.log('Current Level:', currentLevel);
+
+          window.location.href = '/student/sequence_game/lvl_1' + user_id; // Corrected redirection URL format
+
+      }
+  },
+  error: function(xhr, status, error) {
+      console.error('Error fetching record:', error);
+  }
+});
+  
 
 
-
-
-
-  <div class="bg-green-200 flex items-center justify-center min-h-screen relative">
-
-
-
-    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 text-center mt-4">
-      <h1 class="text-3xl font-bold text-blue-600">SEQUENCE <span class="text-yellow-600">PUZZLE</span></h1>
-      <div id="performance-message"></div>
-      <div id="level-display" class="text-xl font-bold mb-4">Level: 1</div>
-      <div id="timer" class="text-lg font-bold">Time: 00:00</div>
-
-      <div id="puzzle-container" class="mt-8 grid grid-cols-8 gap-0">
-        <!-- Puzzle pieces -->
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-1" data-order="1" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-2" data-order="2" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-3" data-order="3" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-4" data-order="4" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-5" data-order="5" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-6" data-order="6" draggable="true"></div>
-        <div class="puzzle-piece w-16 h-80 bg-white border border-gray-300 piece-7" data-order="7" draggable="true"></div>
-      </div>
-      
-      <p class="mt-4 text-lg text-gray-600">Arrange the puzzle pieces in sequence to reveal the image!</p>
-      <p id="completeAllLevel-message" class="hidden text-2xl font-bold text-green-600 mt-4">Congratulations! You've completed this level!</p>
-      <!-- Complete Image Display -->
-      <div id="complete-image" class="hidden mt-7">
-        <h2 class="text-xl font-bold text-blue-600">Here's the completed image!</h2>
-        <img src="/static/assets/Sequence/Animals.png" alt="Completed Puzzle" class="w-64 mx-auto mt-4 border border-gray-400">
-      </div>
-    </div>
-
-    
-  </div>
-</div>
-
+</script>
 
 
 <div class="flex items-center justify-center min-h-screen" id="completion-message" style="display: none;">
-  <div class="text-center mt-6">
-      <!-- Trophy Image -->
-      <img 
-          src="{{ url_for('static', filename='assets/Sensory/Trophy.png') }}" 
-          alt="Trophy" 
-          class="w-54 h-64 mx-auto mb-4" 
-      />
-      
-      <!-- Completion Message -->
-      <div 
-         
-          class="text-3xl font-bold text-yellow-600 p-4 bg-green-100 border border-green-400 rounded shadow-lg" 
-         >
-          You have completed the Daily Level in the Sensory Game!
-          <br><span class="text-yellow-600">Go Back Tomorrow</span>
-      </div>
-  </div>
+    <div class="text-center mt-6">
+        <!-- Trophy Image -->
+        <img 
+            src="{{ url_for('static', filename='assets/Sensory/Trophy.png') }}" 
+            alt="Trophy" 
+            class="w-54 h-64 mx-auto mb-4" 
+        />
+        
+        <!-- Completion Message -->
+        <div 
+           
+            class="text-3xl font-bold text-yellow-600 p-4 bg-green-100 border border-green-400 rounded shadow-lg" 
+           >
+            You have completed the Daily Level in the Sequence Game!
+            <br><span class="text-yellow-600">Go Back Tomorrow</span>
+        </div>
+    </div>
 </div>
+
 
 
 {% include 'student/footer.html' %}
