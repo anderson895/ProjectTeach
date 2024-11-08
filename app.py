@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify ,make_response
 import mysql.connector
 from mysql.connector import Error
 import bcrypt  # Using bcrypt for hashing passwords
@@ -247,9 +247,6 @@ def interactive_game(user_id):
     return render_template('student/interactive_game.html', user_id=user_id)
 
 
-@app.route('/admin/dashboard/')
-def admin_dashboard():
-    return render_template('admin/dashboard.html')
 
 
 
@@ -323,7 +320,6 @@ def sequence_gameLvl_3(user_id):
 
 
 
-
 @app.route('/student/home')
 def student_home():
     if 'user_id' not in session:
@@ -332,12 +328,45 @@ def student_home():
     
     return render_template('student/home.html')
 
+
+
 @app.route('/logout', methods=['POST'])
 def student_logout():
-    session.pop('user_id', None)  # Remove user ID from session
-    session.pop('user_name', None)  # Remove user name from session
-    flash("You have been logged out.")  # Optional flash message
-    return redirect(url_for('student_login'))  # Redirect to login page
+    session.pop('user_id', None)  
+    session.pop('user_name', None)  
+    flash("You have been logged out.")  
+    return redirect(url_for('student_login'))  
+
+
+
+@app.route('/admin/dashboard/')
+def admin_dashboard():
+    # Check if the user is logged in
+    if 'user_id' not in session or 'user_name' not in session:
+        return redirect(url_for('admin_login'))  # Redirect to login page if not logged in
+    
+    # Create the response for the dashboard page
+    response = make_response(render_template('admin/dashboard.html'))
+    
+    # Prevent the browser from caching the page
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
+    return response
+
+
+@app.route('/admin/logout', methods=['POST'])
+def admin_logout():
+    # Clear all session data
+    session.pop('user_id', None)
+    session.pop('user_name', None)
+    
+    return redirect(url_for('admin_login'))  # Redirect to login page after logout
+
+
+
+
 @app.route('/student/register', methods=['POST'])
 def register_user():
     # Get JSON data from the request
