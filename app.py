@@ -162,6 +162,18 @@ def sensory_game(user_id):
 
 
 
+@app.route('/student/interactive_game/<int:user_id>')
+def interactive_game(user_id):
+    return render_template('student/interactive_game.html', user_id=user_id)
+
+
+
+@app.route('/student/interactive_game/lvl_1<int:user_id>')
+def matching_gameLvl_1(user_id):
+    return render_template('student/interactive_game/lvl_1.html', user_id=user_id)
+
+
+
 @app.route('/student/matching_game/<int:user_id>')
 def matching_game(user_id):
     return render_template('student/matching_game.html', user_id=user_id)
