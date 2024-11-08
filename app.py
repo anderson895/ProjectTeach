@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify ,make_response
-import mysql.connector
-from mysql.connector import Error
-import bcrypt  # Using bcrypt for hashing passwords
+from database import Database
+from dashboard import Dashboard
+import mysql.connector 
+import bcrypt  
 from datetime import datetime
 
 app = Flask(__name__)
@@ -11,50 +12,38 @@ app.secret_key = 'AWLJDIAWLWAD'
 def hash_password(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-def get_db_connection():
-    try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            database='ProjTeach',
-            user='root',
-            password=''  # Ensure this is correct
-        )
-        if conn.is_connected():
-            app.logger.info("Database connection successful.")
-        return conn
-    except Error as e:
-        app.logger.error(f"Error connecting to database: {e}")
-        return None
 
 @app.route('/admin/register', methods=['POST'])
 def register_admin():
     username = request.form.get('username')
     password = request.form.get('password')
 
+    # Ensure both fields are provided
     if not username or not password:
         return jsonify({"error": "Please fill out all fields."}), 400
 
+    conn = None  # Initialize conn to avoid UnboundLocalError
     try:
-        conn = get_db_connection()
+        conn = Database().get_db_connection()
         if conn is None:
             return jsonify({"error": "Database connection failed."}), 500
-        
-        cursor = conn.cursor()
 
-        # Check if the username already exists
-        cursor.execute('SELECT * FROM admin WHERE admin_username = %s', (username,))
-        existing_user = cursor.fetchone()
-        
-        if existing_user:
-            return jsonify({"error": f'Username "{username}" already exists. Try another username.'}), 400
-        
-        # Hash the password using bcrypt
-        hashed_password = hash_password(password)
+        # Use cursor as a context manager to automatically close it after the block
+        with conn.cursor() as cursor:
+            # Check if the username already exists
+            cursor.execute('SELECT * FROM admin WHERE admin_username = %s', (username,))
+            existing_user = cursor.fetchone()
 
-        # Insert new admin with hashed password
-        cursor.execute('INSERT INTO admin (admin_username, admin_password) VALUES (%s, %s)', 
-                       (username, hashed_password))
-        conn.commit()
+            if existing_user:
+                return jsonify({"error": f'Username "{username}" already exists. Try another username.'}), 400
+
+            # Hash the password using bcrypt
+            hashed_password = hash_password(password)
+
+            # Insert new admin with hashed password
+            cursor.execute('INSERT INTO admin (admin_username, admin_password) VALUES (%s, %s)', 
+                           (username, hashed_password))
+            conn.commit()
 
         return jsonify({"message": "Registration successful!"}), 200
 
@@ -78,7 +67,7 @@ def login_admin():
     if not username or not password:
         return jsonify({"error": "Username and password are required."}), 400
 
-    conn = get_db_connection()
+    conn = Database().get_db_connection()
     if conn is None:
         return jsonify({"error": "Database connection failed."}), 500
 
@@ -117,7 +106,7 @@ def save_game_results():
     date_today = data['DateToday']
 
     # Save the game results to the database
-    connection = get_db_connection()
+    connection = Database().get_db_connection()
     cursor = connection.cursor()
 
     # Check if a record already exists for the same user, game, and date
@@ -186,7 +175,7 @@ def check_existing_record():
     game_id = data['game_id'] 
     date_today = datetime.now().strftime('%Y-%m-%d')  # Format today's date as 'YYYY-MM-DD'
 
-    connection = get_db_connection()
+    connection = Database().get_db_connection()
     if connection is None:
         app.logger.error("Database connection failed.")
         return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
@@ -358,11 +347,28 @@ def admin_dashboard():
         return redirect(url_for('admin_login'))
 
     response = make_response(render_template('admin/dashboard.html'))
-    # Prevent the browser from caching the page
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    
     return response
+
+
+@app.route('/admin_dashboard_analytics', methods=['GET'])
+
+
+
+def admin_dashboard_analytics():
+    conn = Database().get_db_connection()
+    count_users = Dashboard(conn).count_users()
+    count_daily_activity = Dashboard(conn).count_daily_activity()
+
+    # Create a dictionary with the variables
+    data = {
+        "count_users": count_users,
+        "count_daily_activity": count_daily_activity
+    }
+
+    # Return the dictionary as a JSON response
+    return jsonify(data)
+
 
 
 @app.route('/admin/activities/')
@@ -408,7 +414,7 @@ def register_user():
 
     try:
         # Attempt to connect to the database
-        conn = get_db_connection()
+        conn = Database().get_db_connection()
         cursor = conn.cursor()
 
         # Check if the name already exists in the database
@@ -450,7 +456,7 @@ def login_user():
     username = request.form.get('username')
     
     try:
-        conn = get_db_connection()
+        conn = Database().get_db_connection()
         if conn is None:
             flash("Database connection failed.")
             return redirect(url_for('student_login'))
