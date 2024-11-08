@@ -6,36 +6,41 @@
     <title>Project Teach - Login</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/app.js') }}"></script>
 </head>
 <body class="bg-green-200 flex items-center justify-center min-h-screen">
 
     <div class="text-center max-w-xs">
         <!-- Header Section -->
         <a href="{{ url_for('landing') }}">
-        <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
-        <p class="text-2xl font-bold text-gray-800 mt-2">TEACHER/ADMIN</p>
+            <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
+            <p class="text-2xl font-bold text-gray-800 mt-2">TEACHER/ADMIN</p>
         </a>
+      
 
         <!-- Login Form -->
-        <form class="mt-8 space-y-4">
+        <form id="loginForm" class="mt-8 space-y-4">
+
             <!-- Username Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="text" placeholder="Username" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="text" id="username" placeholder="Username" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
             </div>
-
+        
             <!-- Password Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">vpn_key</span>
-                <input type="password" placeholder="Password" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="password" id="password" placeholder="Password" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
             </div>
-
+        
             <!-- Login Button -->
             <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 rounded-md hover:bg-blue-600 transition duration-200">
                 LOGIN
             </button>
         </form>
-
+        
         <!-- Register Link -->
        
         <p class="mt-4 text-gray-800 text-sm">

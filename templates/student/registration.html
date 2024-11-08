@@ -6,6 +6,9 @@
     <title>Project Teach - Sign Up</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='student/app.js') }}"></script>
 </head>
 <body class="bg-green-200 flex items-center justify-center min-h-screen">
 
@@ -14,42 +17,32 @@
         <a href="{{ url_for('admin_login') }}" >
             <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
         </a>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="space-y-4">
-                    {% for message in messages %}
-                        <li class="alert alert-success bg-green-100 border border-green-400 text-red-700 rounded-lg p-4 shadow-md">
-                            {{ message }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+       
         
         <!-- Unicorn Image Placeholder (replace src with actual image) -->
-        <img src="https://via.placeholder.com/150" alt="Unicorn Icon" class="mx-auto my-4 w-24 h-24">
+        <img src="{{ url_for('static', filename='assets/unicorn.png') }}" alt="Dog Icon" class="mx-auto my-4 w-24 h-24">
         
         <!-- Subtitle -->
         <p class="text-2xl font-bold text-black mt-2">TYPE YOUR INFORMATION</p>
 
         <!-- Sign Up Form -->
-        <form class="mt-8 space-y-4" method="POST" action="{{ url_for('register_user') }}">
+        <form id="registerForm" class="mt-8 space-y-4" method="POST">
             <!-- Name Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="text" name="name" placeholder="Name" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
+                <input type="text" name="name" id="name" placeholder="Name" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
             </div>
 
             <!-- Age Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="number" name="age" placeholder="Age" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
+                <input type="number" name="age" id="age" placeholder="Age" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
             </div>
 
             <!-- Gender Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <select name="gender" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
+                <select name="gender" id="gender" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required >
                 <option value="" disabled selected>Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>

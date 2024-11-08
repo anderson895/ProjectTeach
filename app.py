@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify
 import mysql.connector
 from mysql.connector import Error
+import bcrypt  # Using bcrypt for hashing passwords
 from datetime import datetime
-
 
 app = Flask(__name__)
 app.secret_key = 'AWLJDIAWLWAD'
+
+# Function to hash password using bcrypt
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 def get_db_connection():
     try:
@@ -13,12 +17,90 @@ def get_db_connection():
             host='localhost',
             database='ProjTeach',
             user='root',
-            password=''  # Make sure this is correct
+            password=''  # Ensure this is correct
         )
+        if conn.is_connected():
+            app.logger.info("Database connection successful.")
         return conn
     except Error as e:
         app.logger.error(f"Error connecting to database: {e}")
         return None
+
+@app.route('/admin/register', methods=['POST'])
+def register_admin():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Please fill out all fields."}), 400
+
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({"error": "Database connection failed."}), 500
+        
+        cursor = conn.cursor()
+
+        # Check if the username already exists
+        cursor.execute('SELECT * FROM admin WHERE admin_username = %s', (username,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            return jsonify({"error": f'Username "{username}" already exists. Try another username.'}), 400
+        
+        # Hash the password using bcrypt
+        hashed_password = hash_password(password)
+
+        # Insert new admin with hashed password
+        cursor.execute('INSERT INTO admin (admin_username, admin_password) VALUES (%s, %s)', 
+                       (username, hashed_password))
+        conn.commit()
+
+        return jsonify({"message": "Registration successful!"}), 200
+
+    except mysql.connector.Error as e:
+        app.logger.error(f"Database error: {e}")
+        return jsonify({"error": "An error occurred while saving data."}), 500
+    finally:
+        if conn:
+            conn.close()
+
+@app.route('/admin/login')
+def admin_login():
+    return render_template('admin/login.html')
+
+@app.route('/admin/login', methods=['POST'])
+def login_admin():
+    # Retrieve form data
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required."}), 400
+
+    conn = get_db_connection()
+    if conn is None:
+        return jsonify({"error": "Database connection failed."}), 500
+
+    try:
+        cursor = conn.cursor()
+        # Retrieve the user data from the database
+        cursor.execute('SELECT * FROM admin WHERE admin_username = %s', (username,))
+        user = cursor.fetchone()
+
+        # If user is found, check if the password matches
+        if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):  # Assuming user[2] holds the hashed password
+            session['user_id'] = user[0]  # Store user ID in session
+            session['user_name'] = user[1]  # Store user name in session
+            return jsonify({"message": "Login successful!"}), 200
+        else:
+            return jsonify({"error": "Invalid username or password."}), 401
+    except Error as e:
+        app.logger.error(f"Database query error: {e}")
+        return jsonify({"error": "An error occurred while querying the database."}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 
 
@@ -139,9 +221,7 @@ def landing():
     message = "Hello, this message is dynamic!"
     return render_template('index.html', message=message)
 
-@app.route('/admin/login')
-def admin_login():
-    return render_template('admin/login.html')
+
 
 @app.route('/admin/register')
 def admin_register():
@@ -165,6 +245,11 @@ def sensory_game(user_id):
 @app.route('/student/interactive_game/<int:user_id>')
 def interactive_game(user_id):
     return render_template('student/interactive_game.html', user_id=user_id)
+
+
+@app.route('/admin/dashboard/')
+def admin_dashboard():
+    return render_template('admin/dashboard.html')
 
 
 
@@ -253,48 +338,57 @@ def student_logout():
     session.pop('user_name', None)  # Remove user name from session
     flash("You have been logged out.")  # Optional flash message
     return redirect(url_for('student_login'))  # Redirect to login page
-
-@app.route('/register', methods=['POST'])
+@app.route('/student/register', methods=['POST'])
 def register_user():
-    name = request.form.get('name')
-    age = request.form.get('age')
-    gender = request.form.get('gender')
+    # Get JSON data from the request
+    data = request.get_json()
+    name = data.get('name')
+    age = data.get('age')
+    gender = data.get('gender')
     user_type = 'student'
 
+    # Basic validation to ensure all fields are filled
     if not name or not age or not gender:
-        flash("Please fill out all fields.")
-        return redirect(url_for('student_register'))
+        return jsonify({"error": "Please fill out all fields."}), 400  # Return error as JSON
 
     try:
+        # Attempt to connect to the database
         conn = get_db_connection()
-        if conn is None:
-            flash("Database connection failed.")
-            return redirect(url_for('student_register'))
-        
         cursor = conn.cursor()
 
-      
-        
+        # Check if the name already exists in the database
         cursor.execute('SELECT * FROM users WHERE name = %s', (name,))
         existing_user = cursor.fetchone()
-        
+
         if existing_user:
-            flash(f'"{name}" already exists. Try another name.')
-            return redirect(url_for('student_register'))
-        
+            return jsonify({"error": f'"{name}" already exists. Try another name.'}), 400
+
+        # Insert the new user into the database
         cursor.execute('INSERT INTO users (name, age, gender, type) VALUES (%s, %s, %s, %s)', 
                        (name, age, gender, user_type))
         conn.commit()
-        flash(f'Registration successful! Welcome, {name}!')
+
+        # Return success message as JSON
+        return jsonify({"message": f'Registration successful! Welcome, {name}!'}), 200
 
     except Error as e:
+        # Log the database error and show a friendly message
         app.logger.error(f"Database error: {e}")
-        abort(500, description="An error occurred while saving data.")
+        return jsonify({"error": "An error occurred while saving your data. Please try again."}), 500
+    
     finally:
         if conn:
             conn.close()
 
-    return redirect(url_for('student_login'))
+
+
+
+
+
+
+
+
+
 
 @app.route('/login', methods=['POST'])
 def login_user():
@@ -324,6 +418,9 @@ def login_user():
     finally:
         if conn:
             conn.close()
+
+
+
 
 
 

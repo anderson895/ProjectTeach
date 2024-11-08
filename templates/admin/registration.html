@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Teach - Register</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Project Teach - Register</title>
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+        <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='admin/app.js') }}"></script>
+    </head>
 <body class="bg-green-200 flex items-center justify-center min-h-screen">
 
     <div class="text-center max-w-xs">
         <!-- Header Section -->
         <a href="{{ url_for('admin_login') }}">
-        <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
-        <p class="text-2xl font-bold text-gray-800 mt-2">REGISTER</p>
+            <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>
+            <p class="text-2xl font-bold text-gray-800 mt-2">REGISTER</p>
         </a>
 
         <!-- Registration Form -->
-        <form class="mt-8 space-y-4" method="POST" action="{{ url_for('register_admin') }}">
+        <form id="registerForm" class="mt-8 space-y-4" method="POST">
             <!-- Username Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="text" placeholder="Username" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="text" placeholder="Username" name="username" id="username" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
             </div>
-
+        
             <!-- Password Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">vpn_key</span>
-                <input type="password" placeholder="Password" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="password" placeholder="Password" id="password" name="password" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
             </div>
-
+        
             <!-- Confirm Password Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">vpn_key</span>
-                <input type="password" placeholder="Confirm Password" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="password" placeholder="Confirm Password" id="confirmPassword" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md" required>
             </div>
-
+        
             <!-- Sign Up Button -->
             <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 rounded-md hover:bg-blue-600 transition duration-200">
                 SIGN UP
@@ -50,5 +53,6 @@
 
     <!-- Material Icons for Icons in Inputs -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </body>
 </html>
