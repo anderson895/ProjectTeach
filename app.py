@@ -235,6 +235,9 @@ def student_login():
 def student_register():
     return render_template('student/registration.html')
 
+
+
+
 @app.route('/student/sensory_game/<int:user_id>')
 def sensory_game(user_id):
     return render_template('student/sensory_game.html', user_id=user_id)
@@ -322,31 +325,12 @@ def sequence_gameLvl_3(user_id):
 
 @app.route('/student/home')
 def student_home():
-    if 'user_id' not in session:
-        flash("Please log in to access this page.")
-        return redirect(url_for('student_login'))
     
-    return render_template('student/home.html')
-
-
-
-@app.route('/logout', methods=['POST'])
-def student_logout():
-    session.pop('user_id', None)  
-    session.pop('user_name', None)  
-    flash("You have been logged out.")  
-    return redirect(url_for('student_login'))  
-
-
-
-@app.route('/admin/dashboard/')
-def admin_dashboard():
-    # Check if the user is logged in
     if 'user_id' not in session or 'user_name' not in session:
-        return redirect(url_for('admin_login'))  # Redirect to login page if not logged in
+        return redirect(url_for('student_login'))  
     
-    # Create the response for the dashboard page
-    response = make_response(render_template('admin/dashboard.html'))
+    
+    response = make_response(render_template('student/home.html'))
     
     # Prevent the browser from caching the page
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
@@ -354,6 +338,48 @@ def admin_dashboard():
     response.headers['Expires'] = '0'
     
     return response
+    
+
+
+
+@app.route('/logout', methods=['POST'])
+def student_logout():
+    session.pop('user_id', None)  
+    session.pop('user_name', None)  
+
+    return redirect(url_for('student_login'))  
+
+
+
+@app.route('/admin/dashboard/')
+def admin_dashboard():
+   
+    if 'user_id' not in session or 'user_name' not in session:
+        return redirect(url_for('admin_login'))
+
+    response = make_response(render_template('admin/dashboard.html'))
+    # Prevent the browser from caching the page
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+
+@app.route('/admin/activities/')
+def admin_activities():
+    return render_template('admin/activities.html')
+
+
+@app.route('/admin/attendance/')
+def admin_attendance():
+    return render_template('admin/attendance.html')
+
+@app.route('/admin/student_progress/')
+def admin_student_progress():
+    return render_template('admin/student_progress.html')
+
+
+
 
 
 @app.route('/admin/logout', methods=['POST'])

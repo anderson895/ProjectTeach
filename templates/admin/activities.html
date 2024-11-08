@@ -1,0 +1,15 @@
+{% include 'admin/header.html'%}
+<!-- Top bar with user profile -->
+<div class="flex justify-between items-center bg-yellow-100 p-4 mb-6 rounded-md shadow-md">
+    <h2 class="text-lg font-semibold text-gray-700">Activities</h2>
+    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
+        {{  session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
+    </div>
+</div>
+
+<!-- Dashboard Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+   
+</div>
+
+{% include 'admin/footer.html' %}
