@@ -1,2 +1,55 @@
 {% include 'student/header.html' %}
+
+<!-- Include jQuery UI for draggable and droppable -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+
 <script src="{{ url_for('static', filename='student/interactive_lvl2.js') }}"></script>
+
+
+
+
+<div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto game_Card">
+    <!-- Back Button -->
+<div class="mb-6">
+   <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800" aria-label="Go back to student home">
+       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" role="img" aria-hidden="true">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
+       </svg>
+       <span class="text-lg font-semibold">Back</span>
+   </a>
+</div>
+
+
+
+ <div class="text-center">
+   <h1 class="text-4xl font-bold text-blue-600 mb-6">INTERACTIVE <span class="text-yellow-500">SORTING GAME</span></h1>
+   <h6 class="text-4xl font-bold mb-6" id="currentLevel" data-level="2">Level 2</h6>
+   <div id="timer" class="text-lg font-bold">Time: 00:00</div>
+
+    <div class="bg-white mt-6 p-6 rounded-lg shadow-md flex flex-col min-h-[700px] md:min-h-[500px] lg:min-h-[600px]">
+        <!-- Pencil container -->
+        <div class="pencil-container flex justify-center space-x-4 mb-6 flex-wrap relative"></div>
+    
+        <!-- Sorting Boxes -->
+        <div class="flex justify-around items-stretch grow mt-8 space-x-2">
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+                <span class="text-sm mt-2">Pencil</span>
+            </div>
+            
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+                <span class="text-sm mt-2">Notebook</span>
+            </div>
+            
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+                <span class="text-sm mt-2">Crayon</span>
+            </div>
+    
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+                <span class="text-sm mt-2">Eraser</span>
+            </div>
+        </div>
+    </div>
+    
+</div>

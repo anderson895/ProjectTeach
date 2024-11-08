@@ -2,108 +2,51 @@
 
 <!-- Include jQuery UI for draggable and droppable -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
 
 <script src="{{ url_for('static', filename='student/interactive_lvl1.js') }}"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const pencilContainer = document.querySelector(".pencil-container");
 
-        // Define pencil types with their images and sizes
-        const pencilTypes = [
-            { src: "{{ url_for('static', filename='assets/Sorting/Short_Medium_Long/short_pencil.png') }}", width: "w-12", height: "h-12", type: "short" },
-            { src: "{{ url_for('static', filename='assets/Sorting/Short_Medium_Long/medium_pencil.png') }}", width: "w-16", height: "h-16", type: "medium" },
-            { src: "{{ url_for('static', filename='assets/Sorting/Short_Medium_Long/long_pencil.png') }}", width: "w-20", height: "h-20", type: "long" }
-        ];
 
-        // Set the number of pencils to 8
-        const numberOfPencils = 8;
 
-        // Randomly create 8 pencils and add them to the container
-        for (let i = 0; i < numberOfPencils; i++) {
-            const pencil = pencilTypes[Math.floor(Math.random() * pencilTypes.length)];
 
-            // Create an img element for the pencil
-            const pencilElement = document.createElement("img");
-            pencilElement.src = pencil.src;
-            pencilElement.alt = `${pencil.type.charAt(0).toUpperCase() + pencil.type.slice(1)} Pencil`;
-            pencilElement.className = `${pencil.width} ${pencil.height} cursor-pointer absolute`;
+<div class="mt-3 bg-green-300 p-12 rounded-lg shadow-md w-full max-w-4xl mx-auto game_Card">
+    <!-- Back Button -->
+<div class="mb-6">
+   <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800" aria-label="Go back to student home">
+       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" role="img" aria-hidden="true">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
+       </svg>
+       <span class="text-lg font-semibold">Back</span>
+   </a>
+</div>
 
-            // Make pencil draggable
-            $(pencilElement).draggable({
-                helper: 'original',
-                revert: 'invalid',
-                containment: 'document',
-                zIndex: 9999,
-            });
 
-            // Append pencil to container
-            pencilContainer.appendChild(pencilElement);
-        }
 
-        // Enable the sorting boxes to be droppable
-        $(".sorting-box").droppable({
-            accept: ".cursor-pointer",
-            drop: function(event, ui) {
-                const pencil = ui.helper[0];
-                const box = $(this);
+ <div class="text-center">
+   <h1 class="text-4xl font-bold text-blue-600 mb-6">INTERACTIVE <span class="text-yellow-500">SORTING GAME</span></h1>
+   <h6 class="text-4xl font-bold mb-6" id="currentLevel" data-level="1">Level 1</h6>
+   <div id="timer" class="text-lg font-bold">Time: 00:00</div>
 
-                // Move the pencil inside the box
-                $(pencil).appendTo(box).css({
-                    position: 'relative', // Change to relative to stay within the box
-                    left: '0', // Reset positioning to fit inside the box
-                    top: '0',
-                    margin: 'auto', // Center the pencil within the box
-                    bottom: '5px' // Optional: Add space from the bottom
-                });
-
-                // Lock the pencil inside the box
-                $(pencil).draggable('disable');
-
-                // Check for correct placement
-                const boxType = box.find('span').text().toLowerCase();
-                const pencilType = pencil.alt.toLowerCase().split(" ")[0];
-                if (boxType === pencilType) {
-                    pencil.classList.add("border-green-500");
-                } else {
-                    pencil.classList.add("border-red-500");
-                }
-            }
-        });
-    });
-</script>
-
-<div class="bg-green-200 p-8 text-center mt-4 max-w-4xl mx-auto rounded-lg shadow-lg">
-    <div class="mb-6">
-        <a href="{{ url_for('student_home') }}" class="flex items-center text-blue-600 hover:text-blue-800">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m0 0l6-6m-6 6l6 6" />
-            </svg>
-            <span class="text-lg font-semibold">Back</span>
-        </a>
-    </div>
-
-    <h1 class="text-3xl font-bold text-blue-600">INTERACTIVE</h1>
-    <h2 class="text-2xl font-semibold text-yellow-400 mt-2">SORTING GAME</h2>
-    <h6 class="text-4xl font-bold mb-6" id="currentLevel" data-level="1">Level 1</h6>
-    <div id="timer" class="text-lg font-bold">Time: 00:00</div>
-
-    <div class="bg-white mt-6 p-6 rounded-lg shadow-md">
+    <div class="bg-white mt-6 p-6 rounded-lg shadow-md flex flex-col min-h-[700px] md:min-h-[500px] lg:min-h-[600px]">
         <!-- Pencil container -->
-        <div class="pencil-container flex justify-center space-x-4 mb-6 flex-wrap" style="position: relative;"></div>
-
+        <div class="pencil-container flex justify-center space-x-4 mb-6 flex-wrap relative"></div>
+    
         <!-- Sorting Boxes -->
-        <div class="flex justify-around mt-8">
-            <div class="sorting-box w-32 h-48 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+        <div class="flex justify-around items-stretch grow mt-8 space-x-2">
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
                 <span class="text-sm mt-2">Short</span>
             </div>
-            <div class="sorting-box w-32 h-48 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+            
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
                 <span class="text-sm mt-2">Long</span>
             </div>
-            <div class="sorting-box w-32 h-48 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
+            
+            <div class="sorting-box w-40 flex-1 bg-blue-100 border-2 border-gray-300 rounded-md flex flex-col items-center p-2">
                 <span class="text-sm mt-2">Medium</span>
             </div>
         </div>
     </div>
+    
 </div>

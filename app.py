@@ -173,6 +173,16 @@ def matching_gameLvl_1(user_id):
     return render_template('student/interactive_game/lvl_1.html', user_id=user_id)
 
 
+@app.route('/student/interactive_game/lvl_2<int:user_id>')
+def matching_gameLvl_2(user_id):
+    return render_template('student/interactive_game/lvl_2.html', user_id=user_id)
+
+@app.route('/student/interactive_game/lvl_3<int:user_id>')
+def matching_gameLvl_3(user_id):
+    return render_template('student/interactive_game/lvl_3.html', user_id=user_id)
+
+
+
 
 @app.route('/student/matching_game/<int:user_id>')
 def matching_game(user_id):
