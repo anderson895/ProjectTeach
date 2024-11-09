@@ -17,6 +17,10 @@ function fetchCounts() {
     });
 }
 
+
+
+
+
 // Poll every 5 seconds (5000 milliseconds)
 setInterval(fetchCounts, 5000);
 

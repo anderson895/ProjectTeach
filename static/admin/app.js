@@ -1,4 +1,9 @@
 $(document).ready(function() {
+
+
+    
+
+
     $('#registerForm').submit(function(event) {
         event.preventDefault();
         

@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apexcharts": "^4.0.0",
     "jquery": "^3.7.1",
     "jquery-ui": "^1.14.1",
+    "static": "file:",
     "sweetalert2": "^11.14.5"
   }
 }

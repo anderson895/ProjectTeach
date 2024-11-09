@@ -8,8 +8,10 @@
   <title>Teacher/Admin Dashboard</title>
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+  
 
 </head>
 <body class="bg-gray-100 font-sans antialiased">
@@ -24,10 +26,7 @@
           <span class="material-icons">home</span>
           <span>Home</span>
       </a>
-      <a href="{{url_for('admin_activities')}}" class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">assignment</span>
-          <span>Activities</span>
-      </a>
+      
       <a href="{{url_for('admin_attendance')}}" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
           <span class="material-icons">check_circle</span>
           <span>Attendance</span>

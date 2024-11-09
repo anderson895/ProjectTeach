@@ -1,15 +1,56 @@
-{% include 'admin/header.html'%}
+{% include 'admin/header.html' %}
 <!-- Top bar with user profile -->
 <div class="flex justify-between items-center bg-yellow-100 p-4 mb-6 rounded-md shadow-md">
     <h2 class="text-lg font-semibold text-gray-700">Student Progress</h2>
     <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
-        {{  session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
+        {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
     </div>
 </div>
 
+
+
 <!-- Dashboard Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-   
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 max-w-4xl mx-auto">
+
+    <!-- Sensory Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+      <a href="#">
+        <img src="{{ url_for('static', filename='assets/Banner/Sensory.png') }}" alt="Sensory Game" class="w-full h-40 object-contain mx-auto mb-4">
+        <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
+            Sensory Game
+        </button>
+      </a>
+    </div>
+
+    <!-- Sequence Puzzle Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+      <a href="#">
+        <img src="{{ url_for('static', filename='assets/Banner/Sequence.png') }}" alt="Sequence Puzzle Game" class="w-full h-40 object-contain mx-auto mb-4">
+        <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
+          Sequence Puzzle Game
+        </button>
+      </a>
+    </div>
+
+    <!-- Matching Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+      <a href="#">
+        <img src="{{ url_for('static', filename='assets/Banner/Matching.png') }}" alt="Matching Game" class="w-full h-40 object-contain mx-auto mb-4">
+        <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
+          Matching Game
+        </button>
+      </a>
+    </div>
+
+    <!-- Interactive Sorting Game Card -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+      <a href="#">
+        <img src="{{ url_for('static', filename='assets/Banner/Sorting.png') }}" alt="Interactive Sorting Game" class="w-full h-40 object-contain mx-auto mb-4">
+        <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
+          Interactive Sorting Game
+        </button>
+      </a>
+    </div>
 </div>
 
 {% include 'admin/footer.html' %}

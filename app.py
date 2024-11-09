@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify ,make_response
 from database import Database
 from dashboard import Dashboard
+from attendance import Attendance
 import mysql.connector 
 import bcrypt  
 from datetime import datetime
@@ -352,9 +353,6 @@ def admin_dashboard():
 
 
 @app.route('/admin_dashboard_analytics', methods=['GET'])
-
-
-
 def admin_dashboard_analytics():
     conn = Database().get_db_connection()
     count_users = Dashboard(conn).count_users()
@@ -371,9 +369,20 @@ def admin_dashboard_analytics():
 
 
 
-@app.route('/admin/activities/')
-def admin_activities():
-    return render_template('admin/activities.html')
+
+@app.route('/admin_fetch_all_student', methods=['GET'])
+def admin_fetch_all_student():
+    conn = Database().get_db_connection()
+    admin_fetch_all_student = Attendance(conn).admin_fetch_all_student()
+
+   
+
+    # Return the dictionary as a JSON response
+    return jsonify(admin_fetch_all_student)
+
+
+
+
 
 
 @app.route('/admin/attendance/')
