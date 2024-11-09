@@ -1,14 +1,15 @@
-function fetchCounts() {
+
+
+function fetch_student_record() {
     $.ajax({
-        type: "GET",
-        url: "/admin_dashboard_analytics", // Endpoint to fetch all counts and sales
+        type: "POST",
+        url: "/admin_fetch_game_record", // Endpoint to fetch all counts and sales
         contentType: "application/json",
         dataType: "json",
+        
         success: function(response) {
-
-           $("#count_users").text(response.count_users)
-           $("#count_daily_activity").text(response.count_daily_activity)
             
+            console.log(response);
             
         },
         error: function(xhr, status, error) {
@@ -21,5 +22,10 @@ function fetchCounts() {
 
 
 
+
+setInterval(fetch_student_record, 2000);
+
 // Initial fetch when the page loads
-fetchCounts();
+fetch_student_record();
+
+

@@ -1,0 +1,56 @@
+{% include 'admin/header.html' %}
+<!-- Top bar with user profile -->
+<div class="flex flex-col sm:flex-row justify-between items-center bg-yellow-100 p-4 mb-6 rounded-md shadow-md">
+    <h2 class="text-lg font-semibold text-gray-700">Student Record - {{ student.name if student.name else 'Unknown Student' }}</h2>
+    <div class="w-10 h-10 mt-2 sm:mt-0 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
+        {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
+    </div>
+</div>
+
+<!-- Grid for displaying tables -->
+<div class="grid grid-cols-1 gap-6">
+    <!-- Table for Activities -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Activities</h3>
+        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-yellow-100 dark:text-gray-700">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Activity</th>
+                    <th scope="col" class="px-6 py-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-yellow-50 border-b dark:bg-gray-50 dark:border-gray-300">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">Matching Game</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">
+                        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            Details
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Table for Attendance History -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Attendance Details</h3>
+        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-yellow-100 dark:text-gray-700">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Date</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-yellow-50 border-b dark:bg-gray-50 dark:border-gray-300">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">2024-11-09</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">Present</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include 'admin/footer.html' %}

@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from database import Database
 from dashboard import Dashboard
 from attendance import Attendance
+from activities import Activities
+from get_student_record import Get_User_Info
 import mysql.connector 
 import bcrypt  
 from datetime import datetime
@@ -343,12 +345,9 @@ def student_logout():
 
 @app.route('/admin/dashboard/')
 def admin_dashboard():
-   
     if 'user_id' not in session or 'user_name' not in session:
         return redirect(url_for('admin_login'))
-
     response = make_response(render_template('admin/dashboard.html'))
-    
     return response
 
 
@@ -357,16 +356,19 @@ def admin_dashboard_analytics():
     conn = Database().get_db_connection()
     count_users = Dashboard(conn).count_users()
     count_daily_activity = Dashboard(conn).count_daily_activity()
-
-    # Create a dictionary with the variables
     data = {
         "count_users": count_users,
         "count_daily_activity": count_daily_activity
     }
-
-    # Return the dictionary as a JSON response
     return jsonify(data)
 
+
+@app.route('/admin_fetch_game_record', methods=['GET'])
+def admin_fetch_game_record():
+    conn = Database().get_db_connection()
+    data = Activities(conn).admin_fetch_game_record()
+
+    return jsonify(data)
 
 
 
@@ -374,14 +376,52 @@ def admin_dashboard_analytics():
 def admin_fetch_all_student():
     conn = Database().get_db_connection()
     admin_fetch_all_student = Attendance(conn).admin_fetch_all_student()
-
-   
-
-    # Return the dictionary as a JSON response
     return jsonify(admin_fetch_all_student)
 
 
 
+
+
+
+@app.route('/admin_record_Attendance', methods=['POST'])
+def admin_record_Attendance():
+    data = request.get_json()
+    student_id, status = data.get('studentId'), data.get('status')
+    if not student_id or not status:
+        return jsonify({"status": 400, "message": "Missing studentId or status"}), 400
+    try:
+        conn = Database().get_db_connection()
+        if Attendance(conn).admin_record_Attendance(student_id, status) == 200:
+            return jsonify({"status": 200, "message": "Attendance recorded successfully"})
+        return jsonify({"status": 500, "message": "Error recording attendance"}), 500
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status": 500, "message": "Internal Server Error"}), 500
+
+
+
+
+@app.route('/admin/view_student/')
+def admin_view_student():
+    student_id = request.args.get('id')  # Get the 'id' from the URL query string
+    if student_id:
+        # Fetch the student details from the database using the student_id
+        student = get_student_by_id(student_id)  # Replace with your actual database query
+        if student:
+            return render_template('admin/view_student.html', student=student)
+        else:
+            # Handle case where no student is found
+            return "Student not found", 404
+    else:
+        # Handle case where no student_id is provided
+        return "Student ID not found", 404
+
+
+def get_student_by_id(student_id):
+    conn = Database().get_db_connection()
+    fetch_data = Get_User_Info(conn).fetch_student_record(student_id)
+    print(fetch_data)  # Debugging line to print the data returned by the query
+    return fetch_data  # Make sure this contains 'name'
 
 
 
