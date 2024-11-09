@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 08, 2024 at 04:39 PM
+-- Generation Time: Nov 09, 2024 at 07:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,8 +50,22 @@ INSERT INTO `admin` (`admin_id`, `admin_username`, `admin_password`) VALUES
 CREATE TABLE `attendance` (
   `a_id` int(11) NOT NULL,
   `a_student_id` int(11) NOT NULL,
-  `a_date` int(11) NOT NULL
+  `a_status` varchar(60) NOT NULL,
+  `a_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `attendance`
+--
+
+INSERT INTO `attendance` (`a_id`, `a_student_id`, `a_status`, `a_date`) VALUES
+(18, 15, 'Present', '2024-11-07'),
+(19, 15, 'Present', '2024-11-07'),
+(20, 13, 'Present', '2024-11-07'),
+(21, 11, 'Present', '2024-11-07'),
+(22, 14, 'Present', '2024-11-07'),
+(24, 15, 'Absent', '2024-11-07'),
+(25, 14, 'Present', '2024-11-09');
 
 -- --------------------------------------------------------
 
@@ -176,7 +190,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `a_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `a_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `game`
