@@ -11,7 +11,7 @@
 <div class="grid grid-cols-1 gap-6">
     <!-- Table for Activities -->
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Activities</h3>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Daily Activities</h3>
         <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-yellow-100 dark:text-gray-700">
                 <tr>
@@ -19,15 +19,8 @@
                     <th scope="col" class="px-6 py-3">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr class="bg-yellow-50 border-b dark:bg-gray-50 dark:border-gray-300">
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">Matching Game</td>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">
-                        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            Details
-                        </button>
-                    </td>
-                </tr>
+            <tbody id="view_studentGameRecord">
+                
             </tbody>
         </table>
     </div>
@@ -42,11 +35,8 @@
                     <th scope="col" class="px-6 py-3">Status</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr class="bg-yellow-50 border-b dark:bg-gray-50 dark:border-gray-300">
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">2024-11-09</td>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">Present</td>
-                </tr>
+            <tbody id="view_studentTable">
+               
                 <!-- Add more rows as needed -->
             </tbody>
         </table>
@@ -54,3 +44,6 @@
 </div>
 
 {% include 'admin/footer.html' %}
+
+<script src="{{ url_for('static', filename='admin/student_record.js') }}"></script>
+<script src="{{ url_for('static', filename='admin/view_student.js') }}"></script>

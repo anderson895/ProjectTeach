@@ -1,5 +1,3 @@
-
-
 function admin_fetch_all_student() {
     $.ajax({
         type: "GET",
@@ -52,11 +50,10 @@ function admin_fetch_all_student() {
 }
 
 
-
 function admin_fetch_all_student_today() {
     $.ajax({
         type: "GET",
-        url: "/admin_fetch_all_student_today", // Endpoint to fetch all counts and sales
+        url: "/admin_fetch_all_student_today", // Endpoint to fetch today's student attendance
         contentType: "application/json",
         dataType: "json",
         success: function(response) {
@@ -100,30 +97,25 @@ function admin_fetch_all_student_today() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('Error fetching counts:', error);
+            console.error('Error fetching student attendance:', error);
         }
     });
 }
 
 
 $(document).ready(function() {
-
-
-    
     let currentStudentId = null; // To store the current student ID
     let currentStatus = null;    // To store the current status (Absent or Present)
-    let currentStudentName=null;
+    let currentStudentName = null;
+
     // Function to open the modal
-    function openModal(status, studentId,studentName) {
-      
-     
+    function openModal(status, studentId, studentName) {
         $('#attendanceModal').removeClass('hidden');
         $('#attendanceStatus').text(status);
 
-        
         currentStudentId = studentId;
         currentStatus = status;
-        currentStudentName=studentName;
+        currentStudentName = studentName;
     }
 
     // Function to close the modal
@@ -131,32 +123,33 @@ $(document).ready(function() {
         $('#attendanceModal').addClass('hidden');
     }
 
-    // Handle "Absent" button click
+    // Handle "Absent" button click using event delegation
     $(document).on('click', '.absent-btn', function(event) {
         event.preventDefault();
+
+        console.log('Absent button clicked');
+
         const studentId = $(this).closest('tr').find('th').data('student_id');
         const studentName = $(this).closest('tr').find('td').data('student_name');
         $('#currentStudentName').text(studentName);
         openModal('Absent', studentId, studentName);
     });
-    
-    
+
+    // Handle "Present" button click using event delegation
     $(document).on('click', '.present-btn', function(event) {
         event.preventDefault();
-        const studentId = $(this).closest('tr').find('th').data('student_id'); 
-        const studentName = $(this).closest('tr').find('td').data('student_name'); 
 
-     
+        console.log('Present button clicked');
+
+        const studentId = $(this).closest('tr').find('th').data('student_id');
+        const studentName = $(this).closest('tr').find('td').data('student_name');
         $('#currentStudentName').text(studentName);
-        openModal('Present', studentId,studentName);
+        openModal('Present', studentId, studentName);
     });
 
     $('#cancelButton').click(function() {
         closeModal();
     });
-
-    
-
 
     $('#confirmButton').click(function() {
         if (currentStudentId && currentStatus) {
@@ -170,7 +163,7 @@ $(document).ready(function() {
                 contentType: "application/json",
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     // Show a success message using SweetAlert2
                     Swal.fire({
                         icon: 'success',
@@ -192,7 +185,6 @@ $(document).ready(function() {
             });
         }
     });
-    
 
     // Close modal when clicking outside of the modal (optional)
     $(document).click(function(event) {
@@ -200,17 +192,9 @@ $(document).ready(function() {
             closeModal();
         }
     });
-
-    
 });
 
-
-
-
 // Poll every 5 seconds (5000 milliseconds)
-setInterval(admin_fetch_all_student_today,admin_fetch_all_student, 2000);
-
-// Initial fetch when the page loads
-admin_fetch_all_student_today();
+// setInterval(admin_fetch_all_student_today, 5000);
 admin_fetch_all_student();
-
+admin_fetch_all_student_today();

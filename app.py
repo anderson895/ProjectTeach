@@ -363,10 +363,11 @@ def admin_dashboard_analytics():
     return jsonify(data)
 
 
-@app.route('/admin_fetch_game_record', methods=['GET'])
-def admin_fetch_game_record():
+@app.route('/admin_fetch_game_record_daily', methods=['GET'])
+def admin_fetch_game_record_daily():
+    student_id = request.args.get('id')
     conn = Database().get_db_connection()
-    data = Activities(conn).admin_fetch_game_record()
+    data = Activities(conn).admin_fetch_game_record_daily(student_id)
 
     return jsonify(data)
 
@@ -387,6 +388,18 @@ def admin_fetch_all_student():
     return jsonify(admin_fetch_all_student)
 
 
+
+@app.route('/all_record_Attendance', methods=['GET'])
+def all_record_Attendance():
+    student_id = request.args.get('id')
+    if not student_id:
+        return jsonify({"error": "Student ID is required"}), 400
+    try:
+        conn = Database().get_db_connection()
+        all_record_Attendance = Attendance(conn).all_record_Attendance(student_id)
+        return jsonify(all_record_Attendance)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 

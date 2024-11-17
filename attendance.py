@@ -59,6 +59,29 @@ class Attendance:
 
 
         
+
+    def all_record_Attendance(self, student_id):
+        try:
+            query = """SELECT * FROM attendance WHERE a_student_id = %s"""
+            self.cursor.execute(query, (student_id,))
+            result = self.cursor.fetchall()
+
+            # Adjust to match the table schema
+            return [
+                {
+                    "id": row[0],          # a_id
+                    "student_id": row[1],  # a_student_id
+                    "status": row[2],      # a_status
+                    "date": row[3]         # a_date
+                }
+                for row in result
+            ]
+        except Exception as e:
+            print(f"Error fetching attendance records: {e}")
+            return None
+
+
+
         
 
 
@@ -94,19 +117,23 @@ class Attendance:
 
 
     
-
 if __name__ == "__main__":
-    # Initialize the database connection
     connection = Database().get_db_connection()
+    if connection:
+        attendance = Attendance(connection)
 
-    # Instantiate Attendance with the connection
-    attendance = Attendance(connection)
+        # Fetch attendance records for a specific student ID
+        student_id = 15
+        users = attendance.all_record_Attendance(student_id)
 
-    # Execute the function with the parameters
-    users = attendance.admin_fetch_all_student()
+        if users:
+            print("Attendance Records:")
+            for user in users:
+                print(user)
+        else:
+            print("No attendance records found.")
 
-    print(users)
-
-
-    # Close the connection
-    attendance.close()
+        # Close the connection
+        attendance.close()
+    else:
+        print("Failed to connect to the database.")
