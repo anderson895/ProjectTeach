@@ -372,6 +372,14 @@ def admin_fetch_game_record():
 
 
 
+@app.route('/admin_fetch_all_student_today', methods=['GET'])
+def admin_fetch_all_student_today():
+    conn = Database().get_db_connection()
+    admin_fetch_all_student_today = Attendance(conn).admin_fetch_all_student_today()
+    return jsonify(admin_fetch_all_student_today)
+
+
+
 @app.route('/admin_fetch_all_student', methods=['GET'])
 def admin_fetch_all_student():
     conn = Database().get_db_connection()

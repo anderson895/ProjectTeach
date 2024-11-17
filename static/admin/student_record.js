@@ -1,31 +1,31 @@
 
 
-function fetch_student_record() {
-    $.ajax({
-        type: "POST",
-        url: "/admin_fetch_game_record", // Endpoint to fetch all counts and sales
-        contentType: "application/json",
-        dataType: "json",
+// function fetch_student_record() {
+//     $.ajax({
+//         type: "POST",
+//         url: "/admin_fetch_game_record", 
+//         contentType: "application/json",
+//         dataType: "json",
         
-        success: function(response) {
+//         success: function(response) {
             
-            console.log(response);
+//             console.log(response);
             
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching counts:', error);
-        }
-    });
-}
+//         },
+//         error: function(xhr, status, error) {
+//             console.error('Error fetching counts:', error);
+//         }
+//     });
+// }
 
 
 
 
 
 
-setInterval(fetch_student_record, 2000);
+// setInterval(fetch_student_record, 2000);
 
-// Initial fetch when the page loads
-fetch_student_record();
+// // Initial fetch when the page loads
+// fetch_student_record();
 
 
