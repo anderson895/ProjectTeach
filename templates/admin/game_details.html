@@ -1,0 +1,77 @@
+{% include 'admin/header.html'%}
+<!-- Top bar with user profile -->
+<div class="flex justify-between items-center bg-yellow-100 p-4 mb-6 rounded-md shadow-md">
+    <h2 class="text-lg font-semibold text-gray-700">Activity Details</h2>
+    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
+        {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Grid for displaying tables -->
+<div class="grid grid-cols-1 gap-6">
+    <!-- Table for Activities -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">All Performance on <span id="GameName"></span></h3>
+        
+        <!-- Legend -->
+        <div class="flex space-x-4 mb-4">
+            <div class="flex items-center">
+                <div class="w-4 h-4 bg-yellow-400 rounded-full"></div>
+                <span class="ml-2 text-sm text-gray-700">Excellent</span>
+            </div>
+            <div class="flex items-center">
+                <div class="w-4 h-4 bg-green-400 rounded-full"></div>
+                <span class="ml-2 text-sm text-gray-700">Very Good</span>
+            </div>
+            <div class="flex items-center">
+                <div class="w-4 h-4 bg-gray-400 rounded-full"></div>
+                <span class="ml-2 text-sm text-gray-700">Good</span>
+            </div>
+        </div>
+
+        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-yellow-100 dark:text-gray-700">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Date</th>
+                    <th scope="col" class="px-6 py-3">Current Level</th>
+                    <th scope="col" class="px-6 py-3">Level 1</th>
+                    <th scope="col" class="px-6 py-3">Level 2</th>
+                    <th scope="col" class="px-6 py-3">Level 3</th>
+                </tr>
+            </thead>
+            <tbody id="view_studentGameDetails">
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% include 'admin/footer.html' %}
+<script src="{{ url_for('static', filename='admin/view_game_details.js') }}"></script>

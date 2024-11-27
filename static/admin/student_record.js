@@ -26,17 +26,19 @@ function admin_fetch_game_record_daily() {
             } else {
                 // Loop through the student data and create rows
                 response.forEach(student => {
-                    // Assuming student[9] contains the game name
+                    // Assuming student[9] contains the game name and student[0] contains a unique ID
                     $('#view_studentGameRecord').append(`
                         <tr class="bg-yellow-50 border-b dark:bg-gray-50 dark:border-gray-300">
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">${student[9]}</td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700">
-                                <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                <a href="/game_details?gameId=${student[1]}&&userId=${student[2]}" 
+                                   class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                     Details
-                                </button>
+                                </a>
                             </td>
                         </tr>
                     `);
+                    
                 });
             }
 

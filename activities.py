@@ -62,12 +62,39 @@ class Activities:
         except Exception as e:
             print(f"Error fetching game records: {e}")
             return None
-    
+        
+
+
+    def admin_fetch_game_record_all(self, game_id, user_id):
+        try:
+            # SQL query to fetch all records matching user_id and game_id, sorted by descending date
+            query = """
+                SELECT * 
+                FROM game_record
+                LEFT JOIN game
+                ON game.game_id = game_record.gr_game_id
+                LEFT JOIN users
+                ON users.id = game_record.gr_user_id
+                WHERE gr_user_id = %s AND gr_game_id = %s
+                ORDER BY game_record.gr_date DESC  -- Sort by date in descending order
+            """
+            # Execute the query with the provided parameters
+            self.cursor.execute(query, (user_id, game_id))
+            
+            # Fetch all matching records
+            result = self.cursor.fetchall()
+            
+            return result
+        except Exception as e:
+            print(f"Error fetching game records: {e}")
+            return None
+
+        
 
 if __name__ == "__main__":
     connection = Database().get_db_connection()
     conn = Activities(connection)
-    data = conn.admin_fetch_game_record_daily(11)
+    data = conn.admin_fetch_game_record_all(4,11)
 
     print(data)
 

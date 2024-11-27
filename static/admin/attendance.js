@@ -127,7 +127,7 @@ $(document).ready(function() {
     $(document).on('click', '.absent-btn', function(event) {
         event.preventDefault();
 
-        console.log('Absent button clicked');
+        
 
         const studentId = $(this).closest('tr').find('th').data('student_id');
         const studentName = $(this).closest('tr').find('td').data('student_name');
@@ -139,8 +139,7 @@ $(document).ready(function() {
     $(document).on('click', '.present-btn', function(event) {
         event.preventDefault();
 
-        console.log('Present button clicked');
-
+      
         const studentId = $(this).closest('tr').find('th').data('student_id');
         const studentName = $(this).closest('tr').find('td').data('student_name');
         $('#currentStudentName').text(studentName);
@@ -163,16 +162,20 @@ $(document).ready(function() {
                 contentType: "application/json",
                 dataType: "json",
                 success: function(response) {
-                    // console.log(response);
                     // Show a success message using SweetAlert2
                     Swal.fire({
                         icon: 'success',
                         title: 'Attendance Updated',
                         text: `Attendance for ${currentStudentName} marked as ${currentStatus}`,
                         confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
                     closeModal();
                 },
+                
                 error: function(xhr, status, error) {
                     console.error('Error updating attendance:', error);
                     Swal.fire({

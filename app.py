@@ -215,6 +215,21 @@ def landing():
 
 
 
+@app.route('/game_details')
+def game_details():
+    # Retrieve query parameters
+    game_id = request.args.get('gameId')
+    user_id = request.args.get('userId')
+
+    game_details = {
+        "game_id": game_id,
+        "user_id": user_id
+    }
+    return render_template('/admin/game_details.html', game_details=game_details)
+
+
+
+
 @app.route('/admin/register')
 def admin_register():
     return render_template('admin/registration.html')
@@ -368,6 +383,17 @@ def admin_fetch_game_record_daily():
     student_id = request.args.get('id')
     conn = Database().get_db_connection()
     data = Activities(conn).admin_fetch_game_record_daily(student_id)
+
+    return jsonify(data)
+
+
+
+@app.route('/admin_fetch_game_record_details', methods=['GET'])
+def admin_fetch_game_record_all():
+    gameId = request.args.get('gameId')
+    userId = request.args.get('userId')
+    conn = Database().get_db_connection()
+    data = Activities(conn).admin_fetch_game_record_all(gameId,userId)
 
     return jsonify(data)
 
@@ -558,5 +584,7 @@ def login_user():
 
 
 
-if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+# if __name__ == '__main__':
+#     app.run(port=5001, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5001)
