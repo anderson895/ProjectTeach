@@ -2,20 +2,25 @@
 
 <!-- Top bar with user profile -->
 <div class="flex flex-col sm:flex-row justify-between items-center bg-yellow-100 p-4 mb-6 rounded-md shadow-md">
-    <h2 class="text-lg font-semibold text-gray-700">List of students</h2>
-    <div class="w-10 h-10 mt-2 sm:mt-0 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
+    <h2 class="text-2xl font-semibold text-gray-800 tracking-wide">
+        List of all students 
+    </h2>
+    <div class="w-14 h-14 mt-2 sm:mt-0 bg-gray-400 rounded-full flex items-center justify-center text-xl font-semibold text-white shadow-md">
         {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
     </div>
 </div>
-<div id="game-id" data-id="{{ game_id }}"></div>
+
+<div id="game-id" data-gameid="{{ game_id }}" data-gamename="{{ game_name }}"></div>
+
 <!-- Loading spinner -->
 <div id="loadingSpinner" class="absolute inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 hidden z-50">
     <div class="border-t-4 border-b-4 border-gray-700 rounded-full w-16 h-16 animate-spin"></div>
 </div>
 
 <div class="grid grid-cols-1 gap-6">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" id="search-table">
+    <!-- Table container with shadow and rounded corners -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white border border-gray-200 rounded-lg">
+        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400" id="search-table">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-yellow-100 dark:text-gray-700">
                 <tr>
                     <th scope="col" class="px-4 py-2 sm:px-6 sm:py-3">
@@ -42,8 +47,6 @@
     </div>
 </div>
 
-
 {% include 'admin/footer.html' %}
 
-
-<script src="{{ url_for('static', filename='admin/student_game_stat.js') }}"></script>
+<script src="{{ url_for('static', filename='admin/game_stat.js') }}"></script>

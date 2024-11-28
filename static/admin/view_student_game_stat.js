@@ -13,6 +13,12 @@ function admin_fetchGameStat() {
         success: function(response) {
             console.log('Response:', response);
 
+            // Check if response is null or an empty array
+            if (!response || response.length === 0) {
+                $('#chart').html('<p>No Record Found</p>'); // Display message if no records found
+                return; // Exit the function early
+            }
+
             // Prepare data for the chart
             var level1Data = [];
             var level2Data = [];
@@ -124,6 +130,7 @@ function admin_fetchGameStat() {
         },
         error: function(xhr, status, error) {
             console.error('Error fetching counts:', error);
+            $('#chart').html('<p>No Record Found</p>'); // Display message on error
         }
     });
 }

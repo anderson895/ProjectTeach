@@ -20,14 +20,14 @@ def hash_password(password):
 
 
 
-@app.route('/admin/game_stat/<int:game_id>')
-def game_stat(game_id):
-    return render_template('admin/game_stat.html',game_id=game_id)
+@app.route('/admin/game_stat/<int:game_id>/<string:game_name>')
+def game_stat(game_id,game_name):
+    return render_template('admin/game_stat.html',game_id=game_id,game_name=game_name)
 
 
-@app.route('/admin/view_student_game_stat/<int:student_id>/<int:game_id>')
-def view_student_game_stat(student_id, game_id):
-    return render_template('admin/view_student_game_stat.html', student_id=student_id, game_id=game_id)
+@app.route('/admin/view_student_game_stat/<int:student_id>/<int:game_id>/<string:gameName>/<string:studName>')
+def view_student_game_stat(student_id, game_id,gameName,studName):
+    return render_template('admin/view_student_game_stat.html', student_id=student_id, game_id=game_id,gameName=gameName,studName=studName)
 
 
 

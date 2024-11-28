@@ -5,7 +5,8 @@
 
     <!-- Top Bar with User Profile -->
     <div class="flex flex-col sm:flex-row justify-between items-center bg-yellow-100 p-4 rounded-md shadow-md">
-        <h2 class="text-lg font-semibold text-gray-700">Student Game Statistics</h2>
+        <h2 class="text-lg font-semibold text-gray-700">{{ studName|capitalize }}'s Game Statistics for <span class="font-bold text-yellow-600">{{ gameName|capitalize }}</span></h2>
+
         <div class="w-10 h-10 mt-4 sm:mt-0 bg-gray-500 rounded-full flex items-center justify-center text-lg font-bold text-white">
             {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
         </div>

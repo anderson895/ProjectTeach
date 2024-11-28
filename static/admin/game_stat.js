@@ -1,10 +1,9 @@
 function AllstudentStat() {
 
-    var gameId = $('#game-id').data('id');
+    var gameId = $('#game-id').data('gameid');
 
-
-    console.log(gameId);
-
+    var gameName = $('#game-id').data('gamename');
+    
     $.ajax({
         type: "GET",
         url: "/admin_fetch_all_student",
@@ -42,7 +41,7 @@ function AllstudentStat() {
                                 ${student.gender}
                             </td>
                           <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-700 text-center">
-                                <a href="/admin/view_student_game_stat/${student.id}/${gameId}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600 font-medium ml-2">View</a>
+                                <a href="/admin/view_student_game_stat/${student.id}/${gameId}/${gameName}/${student.name}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600 font-medium ml-2">View</a>
                             </td>
 
 
