@@ -24,7 +24,7 @@
 
     <!-- Sequence Puzzle Game Card -->
     <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
-      <a href="#">
+      <a href="{{ url_for('game_stat',game_id =3) }}">
         <img src="{{ url_for('static', filename='assets/Banner/Sequence.png') }}" alt="Sequence Puzzle Game" class="w-full h-40 object-contain mx-auto mb-4">
         <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
           Sequence Puzzle Game
@@ -34,7 +34,7 @@
 
     <!-- Matching Game Card -->
     <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
-      <a href="#">
+      <a href="{{ url_for('game_stat',game_id =2) }}">
         <img src="{{ url_for('static', filename='assets/Banner/Matching.png') }}" alt="Matching Game" class="w-full h-40 object-contain mx-auto mb-4">
         <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
           Matching Game
@@ -44,7 +44,7 @@
 
     <!-- Interactive Sorting Game Card -->
     <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
-      <a href="#">
+      <a href="{{ url_for('game_stat',game_id =4) }}">
         <img src="{{ url_for('static', filename='assets/Banner/Sorting.png') }}" alt="Interactive Sorting Game" class="w-full h-40 object-contain mx-auto mb-4">
         <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition duration-200 hover:bg-blue-200 hover:text-purple-700">
           Interactive Sorting Game

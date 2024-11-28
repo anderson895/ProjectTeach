@@ -8,6 +8,7 @@ import mysql.connector
 import bcrypt  
 from datetime import datetime
 from game import Get_Game_Info
+from GameStat import Get_GameStat
 
 app = Flask(__name__)
 app.secret_key = 'AWLJDIAWLWAD'
@@ -29,14 +30,16 @@ def view_student_game_stat(student_id, game_id):
     return render_template('admin/view_student_game_stat.html', student_id=student_id, game_id=game_id)
 
 
-# @app.route('/admin_fetchGameStat', methods=['GET'])
-# def admin_fetchGameStat():
-#     game_id = request.args.get('game_id')
-#     student_id = request.args.get('student_id')
 
-#     fetch_game_record = Get_Game_Info(Database().get_db_connection()).fetch_game_record(game_id, student_id)
+
+@app.route('/admin_fetchGameStat', methods=['GET'])
+def admin_fetchGameStat():
+    game_id = request.args.get('game_id')
+    student_id = request.args.get('student_id')
+
+    fetch_game_record = Get_GameStat(Database().get_db_connection()).fetch_game_record_stat(game_id, student_id)
     
-#     return jsonify({"Get_Game_Info": fetch_game_record})
+    return jsonify(fetch_game_record) 
 
 
 
