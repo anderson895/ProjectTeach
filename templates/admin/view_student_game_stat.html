@@ -1,0 +1,97 @@
+{% include 'admin/header.html' %}
+
+<!-- Container -->
+<div class="min-h-screen bg-gray-50 p-6 flex flex-col gap-6">
+
+    <!-- Top Bar with User Profile -->
+    <div class="flex flex-col sm:flex-row justify-between items-center bg-yellow-100 p-4 rounded-md shadow-md">
+        <h2 class="text-lg font-semibold text-gray-700">Student Game Statistics</h2>
+        <div class="w-10 h-10 mt-4 sm:mt-0 bg-gray-500 rounded-full flex items-center justify-center text-lg font-bold text-white">
+            {{ session.get('user_name', '')[0].upper() if session.get('user_name') else '' }}
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div id="Statids" data-student_id="{{ student_id }}" data-game_id="{{ game_id }}"></div>
+        <div id="chart" class="mt-4"></div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="absolute inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 hidden z-50">
+        <div class="border-t-4 border-b-4 border-gray-700 rounded-full w-16 h-16 animate-spin"></div>
+    </div>
+
+</div>
+
+<script>
+   
+    var performanceData = [2, 1, 3]; // Example: Day 1 - Very Good, Day 2 - Good, Day 3 - Excellent
+
+    var options = {
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: {
+                show: false // Disable extra toolbar
+            }
+        },
+        series: [{
+            name: 'Performance',
+            data: performanceData // Static performance data for each day
+        }],
+        xaxis: {
+            categories: ['Day 1', 'Day 2', 'Day 3'], // Days
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: ['#000', '#000', '#000'], // Black color for labels
+                    fontSize: '14px', // Larger font size
+                    fontWeight: 500, // Medium weight
+                },
+                formatter: function (value) {
+                    // Map numeric data to text labels
+                    const levels = ['Good', 'Very Good', 'Excellent'];
+                    return levels[value - 1]; // Adjust index to match labels
+                }
+            },
+            tickAmount: 2, // Limit ticks to 3 levels
+            min: 1,
+            max: 3,
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false, // Vertical bars
+                columnWidth: '50%' // Adjust the bar width if needed
+            }
+        },
+        grid: {
+            borderColor: '#e0e0e0',
+            padding: {
+                left: 20 // Add padding to prevent label clipping
+            }
+        },
+        colors: ['#0000FF', '#FFFF99', '#0000FF'], // Bar colors
+        dataLabels: {
+            enabled: false // Disable data labels for cleaner chart
+        },
+        title: {
+            text: 'Performance Levels',
+            align: 'center',
+            margin: 10,
+            style: {
+                fontSize: '16px',
+                fontWeight: 'bold',
+                color: '#333'
+            }
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+</script>
+
+{% include 'admin/footer.html' %}
+
+<script src="{{ url_for('static', filename='admin/view_student_game_stat.js') }}"></script>
