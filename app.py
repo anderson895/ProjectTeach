@@ -7,13 +7,34 @@ from get_student_record import Get_User_Info
 import mysql.connector 
 import bcrypt  
 from datetime import datetime
+from game import Get_Game_Info
 
 app = Flask(__name__)
 app.secret_key = 'AWLJDIAWLWAD'
 
-# Function to hash password using bcrypt
+
 def hash_password(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+
+
+
+@app.route('/admin/game_stat/<int:game_id>')
+def game_stat(game_id):
+    return render_template('admin/game_stat.html',game_id=game_id)
+
+
+
+
+@app.route('/admin_fetchGame', methods=['GET'])
+def admin_fetchGame():
+    conn = Database().get_db_connection()
+    fetch_game_record = Get_Game_Info(conn).fetch_game_record()
+    data = {
+        "Get_Game_Info": fetch_game_record
+    }
+    return jsonify(data)
+
 
 
 @app.route('/admin/register', methods=['POST'])
@@ -60,6 +81,9 @@ def register_admin():
 @app.route('/admin/login')
 def admin_login():
     return render_template('admin/login.html')
+
+
+
 
 @app.route('/admin/login', methods=['POST'])
 def login_admin():
@@ -378,6 +402,8 @@ def admin_dashboard_analytics():
     return jsonify(data)
 
 
+
+
 @app.route('/admin_fetch_game_record_daily', methods=['GET'])
 def admin_fetch_game_record_daily():
     student_id = request.args.get('id')
@@ -490,7 +516,7 @@ def admin_logout():
     session.pop('user_id', None)
     session.pop('user_name', None)
     
-    return redirect(url_for('admin_login'))  # Redirect to login page after logout
+    return redirect(url_for('admin_login')) 
 
 
 
