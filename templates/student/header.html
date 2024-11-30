@@ -34,9 +34,10 @@
       <!-- Left section: Greeting and character image -->
       <div class="flex items-center space-x-4">
         <a href="{{ url_for('student_home') }}">
-          <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-            WELCOME, {{ session['user_name'] }}!
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white uppercase">
+              WELCOME, {{ session['user_name'] }}!
           </h1>
+        
         </a>
         <div class="w-12 h-12 md:w-16 md:h-16">
           <img src="{{ url_for('static', filename='assets/happy.png') }}" alt="Character" class="w-full h-full object-contain">
