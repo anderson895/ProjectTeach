@@ -263,41 +263,26 @@ $(document).ready(function () {
     });
   
     if (allConnected && allCorrectMatches) {
-      console.log("All pairs are connected and correctly matched!");
-      stopTimer();  // Stop the timer when all pairs are matched and correct
-  
-      // Show alert and proceed to the next level after clicking OK
-      let performance = evaluatePerformance();
-      alert(`Complete Level ${level} ${performance}`);
-  
+        console.log("All pairs are connected and correctly matched!");
+        stopTimer(); // Stop the timer when all pairs are matched and correct
 
-      saveGameResults(performance);
-
-      
+        // Show alert and proceed only after clicking OK
+        let performance = evaluatePerformance();
+        Swal.fire({
+            title: `Level 1 Complete!`,
+            text: `Performance: ${performance}`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        }).then(() => {
+            // Proceed after the user clicks OK
+            saveGameResults(performance);
+        });
     } else {
-      console.log("Not all pairs are connected and correctly matched yet.");
+        console.log("Not all pairs are connected and correctly matched yet.");
     }
   }
   
-  
-  
-  
-
-
-
-  // Remove hover effect after deselection
-  $(".pair").on('mouseover', function () {
-    if (!selectedElement) {
-      $(this).css("background-color", "lightgray");
-    }
-  }).on('mouseout', function () {
-    if (!selectedElement) {
-      $(this).css("background-color", "");
-    }
-  });
-});
-
-
 
 function saveGameResults(performance) {
   const gameData = {
@@ -332,6 +317,25 @@ function saveGameResults(performance) {
       }
   });
 }
+
+
+  
+  
+  
+
+
+
+  // Remove hover effect after deselection
+  $(".pair").on('mouseover', function () {
+    if (!selectedElement) {
+      $(this).css("background-color", "lightgray");
+    }
+  }).on('mouseout', function () {
+    if (!selectedElement) {
+      $(this).css("background-color", "");
+    }
+  });
+});
 
 
 

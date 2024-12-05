@@ -276,9 +276,52 @@ def game_details():
 def admin_register():
     return render_template('admin/registration.html')
 
-@app.route('/student/login')
+
+
+@app.route('/student/login', methods=['GET'])
 def student_login():
     return render_template('student/login.html')
+
+
+@app.route('/student/login', methods=['POST'])
+def login_user():
+    # Get the JSON data sent by the AJAX request
+    data = request.get_json()
+    username = data.get('username')
+
+    if not username:
+        return jsonify({'error': 'Username is required.'}), 400
+    
+    try:
+        # Establish database connection
+        conn = Database().get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed.'}), 500
+
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE name = %s', (username,))
+        user = cursor.fetchone()
+
+        if user:
+            # Assuming user[0] is the user ID and user[1] is the user name
+            session['user_id'] = user[0]  # Store user ID in session
+            session['user_name'] = user[1]  # Store user name in session
+
+            return jsonify({'message': 'Login successful!'}), 200
+        else:
+            return jsonify({'error': f'User "{username}" not found. Please register.'}), 404
+
+    except Error as e:
+        app.logger.error(f"Database error: {e}")
+        return jsonify({'error': 'An error occurred during login.'}), 500
+
+    finally:
+        if conn:
+            conn.close()
+
+
+
+
 
 @app.route('/student/register')
 def student_register():
@@ -588,39 +631,6 @@ def register_user():
 
 
 
-
-
-
-
-
-@app.route('/login', methods=['POST'])
-def login_user():
-    username = request.form.get('username')
-    
-    try:
-        conn = Database().get_db_connection()
-        if conn is None:
-            flash("Database connection failed.")
-            return redirect(url_for('student_login'))
-        
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE name = %s', (username,))
-        user = cursor.fetchone()
-        
-        if user:
-            session['user_id'] = user[0]  # Store user ID in session
-            session['user_name'] = user[1]  # Store user name in session
-            return redirect(url_for('student_home'))
-        else:
-            flash(f'User "{username}" not found. Please register.')
-            return redirect(url_for('student_login'))
-
-    except Error as e:
-        app.logger.error(f"Database error: {e}")
-        abort(500, description="An error occurred during login.")
-    finally:
-        if conn:
-            conn.close()
 
 
 

@@ -1,4 +1,70 @@
 $(document).ready(function() {
+
+
+    $('#loginFormStudent').submit(function(event) {
+        event.preventDefault();
+        
+        var username = $("#username").val();
+    
+        console.log('submited');
+        
+        // Ensure username is not empty before proceeding
+        if (!username) {
+            showAlert("Username is required.", "error");
+            return;
+        }
+        
+        // Proceed with AJAX request for login
+        $.ajax({
+            url: "/student/login",
+            type: "POST",
+            contentType: "application/json", // Set the content type to JSON
+            data: JSON.stringify({
+                username: username
+            }),
+            dataType: "json", // Expect JSON response
+            success: function(response) {
+                // Ensure that the response contains the expected 'message' or 'error'
+                if (response && response.message === "Login successful!") {
+                    showAlert(response.message, "success");
+                    setTimeout(function() {
+                        window.location.href = '/student/home'; // Redirect after login
+                    }, 1500);
+                } else if (response && response.error) {
+                    showAlert(response.error, "error");
+                } else {
+                    showAlert("Unexpected response format.", "error");
+                }
+            },
+            error: function(xhr, status, error) {
+                // Log the raw response for debugging
+                console.error(xhr.responseText);
+                
+                // Handle error response
+                try {
+                    var response = JSON.parse(xhr.responseText); // Safely parse the response
+                    showAlert(response.error || "An unknown error occurred.", "error");
+                } catch (e) {
+                    showAlert("An error occurred with the server response.", "error");
+                }
+            }
+        });
+    });
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
     $('#registerForm').submit(function(event) {
         event.preventDefault();
         

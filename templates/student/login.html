@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Teach - Login</title>
+    <title>Project Teach - LogIn</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='student/app.js') }}"></script>
     
 </head>
 <body class="bg-green-200 flex items-center justify-center min-h-screen">
+
+    {% include 'PageSpinner.html' %}
+
     <div class="text-center max-w-xs">
         <!-- Header Section -->
         <a href="{{ url_for('landing') }}">
@@ -23,11 +31,11 @@
         <p class="text-2xl font-bold text-black mt-2">TYPE YOUR NAME</p>
 
         <!-- Login Form -->
-        <form class="mt-8 space-y-4" method="POST" action="{{ url_for('login_user') }}">
+        <form id="loginFormStudent" class="mt-8 space-y-4">
             <!-- Username Field -->
             <div class="flex items-center bg-yellow-100 rounded-md p-2">
                 <span class="material-icons text-black text-2xl mr-2">person</span>
-                <input type="text" name="username" placeholder="Name" required class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
+                <input type="text" id="username" name="username" placeholder="Name" class="bg-yellow-100 w-full p-2 text-gray-800 outline-none rounded-md">
             </div>
 
             <!-- Login Button -->

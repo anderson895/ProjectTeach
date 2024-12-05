@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Teach</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
 </head>
 <body class="bg-green-200 flex items-center justify-center min-h-screen">
+
+    
+    {% include 'PageSpinner.html' %}
+
     <div class="text-center">
         <!-- Header Section -->
         <h1 class="text-5xl font-bold text-blue-600 mb-2">PROJECT <span class="text-yellow-200">TEACH</span></h1>

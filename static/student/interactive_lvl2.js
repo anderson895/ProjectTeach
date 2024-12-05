@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (correctlyPlaced === numberOfPencils && !gameCompleteTime) {
                     gameCompleteTime = timer; // Record the time when the game is completed
                     displayRating(gameCompleteTime); // Display rating based on completion time
-                    alert("All pencils have been placed correctly!");
+                   
                 }
             } else {
                 // Allow the pencil to revert if it's the wrong box
@@ -119,13 +119,20 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (completionTime <= 180) {
             rating = 'Good';
         }
-
-        // Display rating in a message or alert
-        alert(`You completed the task in ${completionTime} seconds. Your performance: ${rating}`);
-
-        saveGameResults(rating)
-
+    
+        // Display rating using SweetAlert2
+        Swal.fire({
+            title: `You completed the task in ${completionTime} seconds!`,
+            text: `Your performance: ${rating}`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        }).then(() => {
+            // Proceed after the user clicks OK
+            saveGameResults(rating);
+        });
     }
+    
 
 
 

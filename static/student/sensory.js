@@ -41,7 +41,7 @@ $(document).ready(function() {
         const performance = evaluatePerformance(elapsedTime);
         levelResults[currentLevel] = performance; // Store performance for the current level
     
-        alert(performance.message); // Display performance message
+        showAlert(performance.message);
         saveGameResults(); // Call the function to save game results
     
         if (currentLevel >= 3) {
@@ -52,6 +52,50 @@ $(document).ready(function() {
             startNewLevel(); // Proceed to the next level
         }
     }
+
+    // Custom alert function using SweetAlert2
+    function showAlert(message, type) {
+        Swal.fire({
+            icon: type, // 'success' or 'error'
+            title: type === "error" ? "Oops..." : "Level Completed!",
+            text: message,
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#3085d6',
+            customClass: {
+                popup: 'custom-popup',
+                title: 'custom-title',
+                confirmButton: 'custom-button',
+            },
+            // Inline styles
+            didRender: () => {
+                const popup = Swal.getPopup();
+                const title = Swal.getTitle();
+                const button = Swal.getConfirmButton();
+    
+                // Popup styles
+                popup.style.background = '#f4f4f4'; // Light gray background
+                popup.style.borderRadius = '10px'; // Rounded corners
+                popup.style.padding = '20px'; // Add some padding
+                popup.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)'; // Shadow effect
+    
+                // Title styles
+                title.style.color = type === "error" ? '#d9534f' : '#4caf50'; // Red for error, green for success
+                title.style.fontSize = '24px'; // Larger font size
+                title.style.fontWeight = 'bold';
+    
+                // Button styles
+                button.style.backgroundColor = '#3085d6';
+                button.style.color = '#fff';
+                button.style.border = 'none';
+                button.style.borderRadius = '5px';
+                button.style.padding = '10px 20px';
+                button.style.fontSize = '16px';
+                button.style.cursor = 'pointer';
+            }
+        });
+    }
+    
+
 
     // Function to evaluate performance
     function evaluatePerformance(time) {
