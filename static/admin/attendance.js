@@ -6,7 +6,7 @@ function admin_fetch_all_student() {
         dataType: "json",
         success: function(response) {
             // Clear the table before adding new data
-            $('#studentTable').empty();
+            $('#AllstudentTable').empty();
             
             if (response.length === 0) {
                 // If no records found, display a message
@@ -57,6 +57,7 @@ function admin_fetch_all_student_today() {
         contentType: "application/json",
         dataType: "json",
         success: function(response) {
+            console.log(response);
             // Clear the table before adding new data
             $('#studentTable').empty();
             
