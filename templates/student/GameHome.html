@@ -1,0 +1,47 @@
+{% include 'student/header.html' %}
+
+<!-- Game Cards Section -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 p-8 max-w-4xl mx-auto">
+
+<!-- Sensory Game Card -->
+<div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+  <a href="{{ url_for('sensory_game', user_id=session['user_id']) }}">
+    <img src="{{ url_for('static', filename='assets/Banner/Sensory.png') }}" alt="Sensory Game" class="w-full h-40 object-contain mx-auto mb-4">
+    
+        <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition-colors duration-200 hover:bg-blue-200">
+            Sensory Game
+        </button>
+    </a>
+</div>
+
+  <!-- Sequence Puzzle Game Card -->
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+    <a href="{{ url_for('sequence_game', user_id=session['user_id']) }}">
+    <img src="{{ url_for('static', filename='assets/Banner/Sequence.png') }}" alt="Sequence Puzzle Game" class="w-full h-40 object-contain mx-auto mb-4">
+      <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition-colors duration-200 hover:bg-blue-200">
+        Sequence Puzzle Game
+      </button>
+    </a>
+  </div>
+
+  <!-- Matching Game Card -->
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+    <a href="{{ url_for('matching_game', user_id=session['user_id']) }}">
+    <img src="{{ url_for('static', filename='assets/Banner/Matching.png') }}" alt="Matching Game" class="w-full h-40 object-contain mx-auto mb-4">
+    <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition-colors duration-200 hover:bg-blue-200">
+      Matching Game
+    </button>
+    </a>
+  </div>
+  <!-- Interactive Sorting Game Card -->
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center transition-transform transform hover:scale-105">
+    <a href="{{ url_for('interactive_game', user_id=session['user_id']) }}">
+    <img src="{{ url_for('static', filename='assets/Banner/Sorting.png') }}" alt="Interactive Sorting Game" class="w-full h-40 object-contain mx-auto mb-4">
+    <button class="bg-blue-100 text-purple-600 px-4 py-2 rounded font-semibold uppercase transition-colors duration-200 hover:bg-blue-200">
+      Interactive Sorting Game
+    </button>
+    </a>
+  </div>
+
+  {% include 'student/footer.html' %}
+</div>

@@ -412,6 +412,30 @@ def sequence_gameLvl_3(user_id):
 
 
 
+@app.route('/student/ReadHome')
+def student_ReadHome():
+    if 'user_id' not in session or 'user_name' not in session:
+        return redirect(url_for('student_login'))  
+    response = make_response(render_template('student/ReadHome.html'))
+    # Prevent the browser from caching the page
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+
+@app.route('/student/GameHome')
+def student_GameHome():
+    if 'user_id' not in session or 'user_name' not in session:
+        return redirect(url_for('student_login'))  
+    response = make_response(render_template('student/GameHome.html'))
+    # Prevent the browser from caching the page
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+
 
 
 
@@ -568,6 +592,9 @@ def admin_attendance():
 @app.route('/admin/student_progress/')
 def admin_student_progress():
     return render_template('admin/student_progress.html')
+
+
+
 
 
 
