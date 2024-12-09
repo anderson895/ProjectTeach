@@ -1,39 +1,48 @@
 {% include 'student/header.html' %}
+
 <div class="container mx-auto px-4 py-10">
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    <!-- Card 1: Ttitik Aa -->
+    <!-- Card 1: Titik Aa -->
     <div class="bg-gradient-to-br from-pink-300 to-yellow-200 p-6 rounded-xl shadow-lg text-center">
-      <img src="{{ url_for('static', filename='assets/a.png') }}" alt="Titik Aa" class="w-full h-auto mb-4 rounded-lg">
-      <h2 class="text-xl font-semibold text-gray-700">Titik Aa</h2>
+      <img src="{{ url_for('static', filename='assets/a.png') }}" alt="Titik Aa" class="w-full h-auto mb-4 rounded-lg cursor-pointer image transition-transform transform hover:scale-105" data-large="{{ url_for('static', filename='assets/a.png') }}">
+      
     </div>
     
-    <!-- Card 2: Ttitik Ee -->
+    <!-- Card 2: Titik Ee -->
     <div class="bg-gradient-to-br from-blue-300 to-purple-200 p-6 rounded-xl shadow-lg text-center">
-      <img src="{{ url_for('static', filename='assets/e.png') }}" alt="Titik Ee" class="w-full h-auto mb-4 rounded-lg">
-      <h2 class="text-xl font-semibold text-gray-700">Titik Ee</h2>
+      <img src="{{ url_for('static', filename='assets/e.png') }}" alt="Titik Ee" class="w-full h-auto mb-4 rounded-lg cursor-pointer image transition-transform transform hover:scale-105" data-large="{{ url_for('static', filename='assets/e.png') }}">
+      
     </div>
 
-    <!-- Card 3: Ttitik Ii -->
+    <!-- Card 3: Titik Ii -->
     <div class="bg-gradient-to-br from-green-300 to-teal-200 p-6 rounded-xl shadow-lg text-center">
-      <img src="{{ url_for('static', filename='assets/i.png') }}" alt="Titik Ii" class="w-full h-auto mb-4 rounded-lg">
-      <h2 class="text-xl font-semibold text-gray-700">Titik Ii</h2>
+      <img src="{{ url_for('static', filename='assets/i.png') }}" alt="Titik Ii" class="w-full h-auto mb-4 rounded-lg cursor-pointer image transition-transform transform hover:scale-105" data-large="{{ url_for('static', filename='assets/i.png') }}">
+      
     </div>
 
-    <!-- Card 4: Ttitik Oo -->
+    <!-- Card 4: Titik Oo -->
     <div class="bg-gradient-to-br from-red-300 to-orange-200 p-6 rounded-xl shadow-lg text-center">
-      <img src="{{ url_for('static', filename='assets/o.png') }}" alt="Titik Oo" class="w-full h-auto mb-4 rounded-lg">
-      <h2 class="text-xl font-semibold text-gray-700">Titik Oo</h2>
+      <img src="{{ url_for('static', filename='assets/o.png') }}" alt="Titik Oo" class="w-full h-auto mb-4 rounded-lg cursor-pointer image transition-transform transform hover:scale-105" data-large="{{ url_for('static', filename='assets/o.png') }}">
+      
     </div>
 
-    <!-- Card 5: Ttitik Uu -->
+    <!-- Card 5: Titik Uu -->
     <div class="bg-gradient-to-br from-indigo-300 to-yellow-300 p-6 rounded-xl shadow-lg text-center">
-      <img src="{{ url_for('static', filename='assets/u.png') }}" alt="Titik Uu" class="w-full h-auto mb-4 rounded-lg">
-      <h2 class="text-xl font-semibold text-gray-700">Titik Uu</h2>
+      <img src="{{ url_for('static', filename='assets/u.png') }}" alt="Titik Uu" class="w-full h-auto mb-4 rounded-lg cursor-pointer image transition-transform transform hover:scale-105" data-large="{{ url_for('static', filename='assets/u.png') }}">
+      
     </div>
-
   </div>
 </div>
 
+<!-- Modal -->
+<div id="imageModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center hidden">
+  <div class="relative bg-white p-6 rounded-lg max-w-lg">
+    <button id="closeModal" class="absolute top-0 right-0 p-4 text-white text-2xl">×</button>
+    <!-- Adjust the size of the image in the modal -->
+    <img id="modalImage" src="" alt="Modal Image" class="w-full h-[600px] object-contain rounded-lg">
+  </div>
+</div>
 
-  {% include 'student/footer.html' %}
+{% include 'student/footer.html' %}
 
+<script src="/static/student/readHome.js"></script>
