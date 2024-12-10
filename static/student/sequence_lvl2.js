@@ -140,13 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let performanceClass = '';
 
     if (time <= 60) {
-      performanceText = "Excellent!";
+      performanceText = "Excellent";
       performanceClass = "text-green-500";
     } else if (time <= 120) {
-      performanceText = "Very Good!";
+      performanceText = "Very Good";
       performanceClass = "text-yellow-500";
     } else {
-      performanceText = "Good!";
+      performanceText = "Good";
       performanceClass = "text-red-500";
     }
 

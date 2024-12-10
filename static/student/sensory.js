@@ -101,10 +101,10 @@ $(document).ready(function() {
     function evaluatePerformance(time) {
         let message = "";
         if (time <= 60) {
-            message = "Excellent!";
+            message = "Excellent";
             return { grade: "Excellent", message };
         } else if (time <= 120) {
-            message = "Very good!";
+            message = "Very good";
             return { grade: "Very Good", message };
         } else {
             message = "Good!";
