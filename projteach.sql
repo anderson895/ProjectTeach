@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2024 at 07:36 AM
+-- Generation Time: Dec 10, 2024 at 06:49 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -122,27 +122,29 @@ CREATE TABLE `game_record` (
 --
 
 INSERT INTO `game_record` (`gr_id`, `gr_game_id`, `gr_user_id`, `gr_current_level`, `gr_lvl1`, `gr_lvl2`, `gr_lvl3`, `gr_date`) VALUES
-(77, 1, 13, 'gr_lvl2', 'Excellent', 'Good', 'Good', '2024-11-07'),
-(78, 3, 13, 'gr_lvl2', 'Excellent!', 'Good', 'Good', '2024-11-08'),
-(79, 2, 15, 'Completed', 'Excellent', 'Good', 'Excellent', '2024-11-08'),
-(81, 2, 11, 'gr_lvl2', 'Excellent', 'Good', 'Very Good', '2024-11-11'),
+(77, 1, 13, 'gr_lvl2', 'Excellent', 'Very Good', 'Good', '2024-11-07'),
+(78, 3, 13, 'gr_lvl2', 'Excellent', 'Very Good', 'Good', '2024-11-08'),
+(79, 2, 15, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-11-08'),
+(81, 2, 11, 'gr_lvl2', 'Excellent', 'Very Good', 'Very Good', '2024-11-11'),
 (82, 4, 11, 'gr_lvl2', 'Excellent', 'Very Good', 'Very Good', '2024-11-11'),
-(83, 2, 11, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-11-18'),
-(84, 4, 11, 'gr_lvl2', 'Excellent', 'Good', 'Very Good', '2024-11-18'),
-(85, 2, 15, 'gr_lvl2', 'Excellent', 'Excellent', 'Good', '2024-11-19'),
-(86, 1, 16, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-11-19'),
-(87, 2, 13, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-11-19'),
-(88, 3, 16, 'Completed', 'Excellent!', 'Good', 'Excellent!', '2024-11-19'),
+(83, 2, 11, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-11-18'),
+(84, 4, 11, 'gr_lvl2', 'Excellent', 'Very Good', 'Very Good', '2024-11-18'),
+(85, 2, 15, 'gr_lvl2', 'Excellent', 'Very Good', 'Good', '2024-11-19'),
+(86, 1, 16, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-11-19'),
+(87, 2, 13, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-11-19'),
+(88, 3, 16, 'Completed', 'Excellent', 'Very Good', 'Very Good', '2024-11-19'),
 (89, 2, 16, 'gr_lvl2', 'Excellent', 'Very Good', 'Very Good', '2024-11-19'),
-(91, 4, 11, 'gr_lvl3', 'Excellent', 'Excellent', NULL, '2024-11-19'),
-(92, 4, 11, 'gr_lvl2', 'Very Good', 'Very Good', NULL, '2024-11-27'),
-(94, 1, 11, 'gr_lvl3', 'Excellent', 'Excellent', NULL, '2024-11-28'),
-(99, 1, 14, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-12-05'),
-(104, 2, 14, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-12-05'),
-(105, 3, 14, 'Completed', 'Excellent!', 'Excellent!', 'Excellent!', '2024-12-05'),
-(107, 4, 14, 'gr_lvl2', 'Excellent', NULL, NULL, '2024-12-05'),
-(109, 1, 11, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-12-04'),
-(110, 1, 11, 'Completed', 'Excellent', 'Excellent', 'Excellent', '2024-12-05');
+(91, 4, 11, 'gr_lvl3', 'Excellent', 'Very Good', NULL, '2024-11-19'),
+(92, 4, 11, 'gr_lvl2', 'Excellent', 'Very Good', NULL, '2024-11-27'),
+(94, 1, 11, 'gr_lvl3', 'Excellent', 'Very Good', NULL, '2024-11-28'),
+(99, 1, 14, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-12-05'),
+(104, 2, 14, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-12-05'),
+(105, 3, 14, 'Completed', 'Excellent', 'Very Good', 'Good', '2024-12-05'),
+(107, 4, 14, 'gr_lvl2', 'Excellent', 'Very Good', NULL, '2024-12-05'),
+(109, 1, 11, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-12-04'),
+(110, 1, 11, 'Completed', 'Excellent', 'Very Good', 'Excellent', '2024-12-05'),
+(111, 3, 11, 'gr_lvl3', 'Excellent', 'Very Good', NULL, '2024-12-10'),
+(112, 1, 11, 'gr_lvl2', 'Excellent', 'Very Good', NULL, '2024-12-10');
 
 -- --------------------------------------------------------
 
@@ -235,7 +237,7 @@ ALTER TABLE `game`
 -- AUTO_INCREMENT for table `game_record`
 --
 ALTER TABLE `game_record`
-  MODIFY `gr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
+  MODIFY `gr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT for table `users`
