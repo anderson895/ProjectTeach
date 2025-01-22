@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Teach</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/corgi.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
 </head>
@@ -28,8 +26,7 @@
                     <img src="{{ url_for('static', filename='assets/teacher-icon.png') }}" alt="Teacher/Admin Icon" class="w-24 h-24 mx-auto mb-4">
                     <p class="text-center text-lg font-medium">I'm a Teacher/Admin</p>
                 </div>
-            </a>
-            
+            </a>            
 
             <!-- Student Card -->
             <a href="{{ url_for('student_login') }}">
