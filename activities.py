@@ -1,7 +1,6 @@
 from database import Database
 import pytz
 from datetime import datetime
-
 class Activities:
     def __init__(self, connection):
         # Initialize with a database connection
